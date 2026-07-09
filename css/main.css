@@ -1,0 +1,542 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  
+}
+
+:root {
+  --arcgis-view-color-focus: #none;
+  --calcite-color-text-link: #efefef;
+}
+
+html,
+body,
+main {
+  font-family: Avenir Next;
+  font-weight: 600;
+  color: #444444;
+  
+  font-size: 0.9375rem;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.btn-container {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  text-align: right;
+  z-index: 1;
+  /* pointer-events: none; */
+}
+
+calcite-link {
+  margin-top: 6px;
+}
+
+#explore{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  cursor: url('../libraries/images/CrosshairWhite.png') 22 22, crosshair
+}
+
+#explore-main-view {
+  width: 100vw;
+  height: 70vh;
+  /* box-shadow: inset 0 10px 10px -10px #000, inset 0 -10px 10px -10px #000; */
+}
+
+#projection-main-view {
+  width: 100vw;
+  height: 100vh;
+}
+
+main .shadow{
+box-shadow: inset 0 10px 10px -10px #000;
+    width: 100%;
+    height: 1vh;
+    position: absolute;
+    z-index: 10;
+}
+
+
+#supplemental-explorer-views {
+  display: flex;
+  box-shadow: 0 -10px 10px -10px #000; 
+  z-index: 1;
+}
+/* #explore arcgis-map .main-view-overlay {
+  width: 100%;
+  height: 1vh;
+  background-color: transparent;
+  box-shadow: inset 0 10px 10px -10px #000;
+  z-index:10
+  } */
+  /* 
+
+.overlayTopMargin{
+  display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+*/
+
+/* .esri-ui-top-right .esri-component #btn-container div button.btn{
+  appearance: none;
+
+} */
+
+.search-container{
+  position: absolute;
+  top: 90px;
+  /* top: 130px; */
+  left: 15px;
+}
+button.btn{
+  appearance: none;
+  font-family: Avenir Next;
+  font-weight: 600;
+  color: #444444;
+}
+
+button calcite-icon {
+  color: black;
+  top: 3px;
+  position: relative;
+}
+
+#mode-btns{
+  position: absolute;
+  top: 2rem;
+  right: 1rem;
+  text-align: right;
+  z-index: 1;
+}
+
+#changeModel-btns{
+  position: absolute;
+  top: 4.5rem;
+  right: 1rem;
+  text-align: right;
+  z-index: 1;
+}
+
+#changeType-btns {
+  position: absolute;
+    top: 7rem;
+    right: 1rem;
+    text-align: right;
+    z-index: 1;
+}
+
+/* arcgis-map .esri-view .esri-view-surface:focus::after {
+  outline-color: transparent;
+} */
+/* arcgis-map {
+  width: 33.33vw;
+  height: 30vh;
+} */
+
+/* #land-cover-view,
+#land-form-view,
+#climate-region-view {
+ width: 33.33vw;
+  height: 30vh;
+} */
+
+#LandCover,
+#Landform,
+#ClimateRegion {
+ width: 33.33vw;
+  height: 30vh;
+  /* box-shadow: 0 -10px 10px -10px #000; */
+}
+
+.label {
+  padding: 0 10px 0 10px;
+  height: 3rem;
+  width: 100%;
+  opacity: 80%;
+  background: black;
+  color: #efefef;
+  position: absolute;
+  bottom: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#pop-out-map .label {
+    padding: 0 10px 0 10px;
+    height: 2rem;
+    width: 100%;
+    opacity: 90%;
+    background: #808080;
+    color: #efefef;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+}
+.label div {
+  /* margin-left: 0.5rem; */
+  display: flex;
+  align-items: center
+}
+
+.label div span {
+  margin-left: 0.5rem;
+}
+
+#supplemental-explorer-views arcgis-map div calcite-select.dropdown-select {
+  width: 23rem;
+  position: relative;
+  top: -1vh;
+  justify-self: center;
+  --calcite-select-corner-radius: 5px;
+  --calcite-select-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+.dropdown-select {
+  width: 23rem;
+  position: relative;
+  top: -1.5vh;
+  justify-self: center;
+}
+.select-button {
+  font-family: Avenir Next;
+  font-weight: 600;
+  color: #444444;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 2.5rem;
+  padding: 0.675em 1em;
+  border: 1px solid #caced1;
+  border-radius: 0.5rem;
+  background-color: white;
+  cursor: pointer;
+}
+
+ .arrow::before,
+.arrow::after {
+  --size: 0.3rem;
+  position: absolute;
+  content: "";
+  right: 1rem;
+  pointer-events: none;
+}
+
+.arrow::before {
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-bottom: var(--size) solid black;
+  top: 31%;
+}
+
+.arrow::after {
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-top: var(--size) solid black;
+  top: 55%;
+}
+ 
+.select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  border: 1px solid #caced1;
+  border-radius: 0.5rem;
+  background-color: white;
+  list-style: none;
+  padding: 10px;
+  /* margin: 10px 0 0; */ /*The margin-top determines how close the list element is to the dropdown selector*/
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-height: 200px;
+  overflow-y: auto;
+}
+.select-dropdown::-webkit-scrollbar {
+  width: 7px;
+}
+.select-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 25px;
+}
+.select-dropdown::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 25px;
+}
+.select-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+}
+/* Highlight the selected option */
+.select-dropdown li.selected {
+  background-color: #f2f2f2;
+  border-radius: 4px;
+  font-weight: bold;
+}
+.select-dropdown li:hover,
+.select-dropdown li:focus {
+  background-color: #f2f2f2;
+  border-radius: 4px;
+}
+
+.select-dropdown.hidden {
+  display: none;
+}
+
+button {
+  margin: 0 0.5rem;
+}
+
+.btn {
+  background-color: #f1f4f5;
+  border-radius: 6px;
+  border: none;
+  /* height: 1.5rem; */
+  padding: 0rem 1rem;
+  /* margin: 0.5rem 0 0 0; */
+  cursor: pointer;
+   outline: solid;
+  outline-width: 2px;
+  outline-color: #f1f4f5;
+} 
+
+#mode-btns,
+#changeModel-btns,
+#changeType-btns {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none;      /* IE 10 and IE 11 */
+  user-select: none;        
+}
+.selected-btn {
+ 
+  border-bottom: solid;
+  border-bottom-color: #444444;
+  border-bottom-width: 4px;
+  border-radius: 4px;
+}
+/* .selected-btn {
+  position: relative;
+  overflow: hidden;  */
+  /* Ensures the border stays "inside" */
+/* } */
+/* .selected-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: black;
+} */
+
+.hidden {
+  visibility: hidden;
+}
+
+
+.placeholder {
+  color:#808080
+}
+
+.map-pop-out-icon {
+  cursor: pointer;
+}
+
+main #user-icon{
+  position: absolute;
+    z-index: 1;
+    top: 15px;
+    left: 4.5rem;
+  background-color: #F1F4F5;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+main #user-icon .profile {
+  
+  border-radius: 50%;
+  height: 36px;
+  width: 36px;
+  position: relative;
+}
+
+main #user-icon .profile img {
+  border-radius: 50%;
+  border: 2px solid #F1F4F5;
+  height: 36px;
+  width: 36px;
+}
+
+.logOut-icon {
+  transform: translate(24px, -15px);
+  background: #F1F4F5;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+}
+
+#pop-out-map-container {
+  display: flex;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 5;
+  background: radial-gradient(circle, rgba(231, 235, 238, 1) 0%, rgba(184, 194, 211, 0.6) 100%);
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+#pop-out-map {
+  width: 80%;
+  height: 80%;
+}
+
+#export-icon {
+  /* This display: none is temporary */
+  display: none;
+  position: absolute;
+  top: 85px;
+  left: 15px;
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px;
+  height: 32px;
+  width: 30px;
+  z-index: 1;
+  padding: 5px 2px 0px;
+}
+
+#export-container {
+   display: flex;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 5;
+  background: radial-gradient(circle, rgba(231, 235, 238, 1) 0%, rgba(184, 194, 211, 0.6) 100%);
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.not-displayed {
+  /* display: none; */
+  position: absolute; 
+  top:100vh;
+}
+.form-container {
+  width: 30rem;
+  height: 45vh;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+  border-radius: 0.75rem;
+  padding: 2.5rem;
+}
+
+.form-container textarea {
+  padding: 10px 0 0 10px;
+  background-color: #EAEEF1;
+  box-shadow: inset 0px 0px 6px #FFFFFF, inset 0px 4px 4px #B8C2D3;
+  border: 0;
+  border-radius: 3px;
+  height: 3.5rem;
+  max-height: 7rem;
+  min-width: 100%;
+  max-width: 100%;
+  font-family: 'Roboto Condensed', sans-serif;
+  color: #637287;
+  font-size: 14px;
+}
+
+.form-container label {
+  display: block;
+  margin: 0 0 0 10px;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.form-btn-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.form-btn-container .btn {
+  padding: 10px;
+  border-radius: 4px;
+  background: #f1f4f5;
+  box-shadow: inset 6px 6px 6px #eaeef1, -2px -2px 3px #f9fbfb, 3px 3px 4px #d8e0e7;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: end;
+  height: 3rem
+}
+
+#exportResponseMessage {
+    width: 30rem;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+    border-radius: 0.75rem;
+    padding: 2.5rem;
+}
+
+
+#exportResponseMessage div.link-btn-container{
+  display: flex;
+justify-content: flex-end
+
+}
+
+#exportResponseMessage .btn{
+padding: 10px;
+    border-radius: 4px;
+    background: #f1f4f5;
+    box-shadow: inset 6px 6px 6px #eaeef1, -2px -2px 3px #f9fbfb, 3px 3px 4px #d8e0e7;
+    font-weight: bold;
+    height: 2.5rem;
+    align-content: space-evenly;
+    color:black
+}
+
+.invalidSelectionNotification {
+  position: absolute;
+  left: 50vw;
+  top: 10rem;
+  z-index: 15;
+  color: #efefef;
+  transform: translate(-50%, -300%);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)
+}
+
+.show{
+ transform: translateX(-50%) translateY(0);
+}
+
+.invalidSelectionNotification .notification-container{
+ background-color: rgba(0, 0, 0, 0.5); 
+ display: flex;
+ align-items: center;
+ flex-direction: row;
+ justify-content: center;
+ padding: 1.1rem
+}
+
+.invalidSelectionNotification .notification-container span{
+ width: 20rem;
+ padding: 0 0.72rem 0 1.4rem;
+
+}
+
+.white-path {
+  fill: white;
+}

@@ -1,0 +1,53 @@
+{"identifier":"landformsCliSelect",
+   "url":"https://landscape7.arcgis.com/arcgis/rest/services/World_Landforms_Improved_Hammond_Method/ImageServer",
+   "title": "Landform",
+   "label":"Landforms",
+   "unit":"EF_LSF_Des",
+   "items":[
+      {
+         "id":1, 
+         "Value": 1,
+         "wte":"Mountains",
+         "inputLayer":"LSF",
+         "color":[
+           205, 
+           170, 
+           102
+         ]
+      },
+       {
+         "id":2, 
+         "Value": 2,
+         "wte":"Hills",
+         "inputLayer":"LSF",
+         "color":[
+            123,
+            166,
+            66
+         ]
+      },
+       {
+         "id":3, 
+         "Value": 3,
+         "wte":"Tablelands",
+         "inputLayer":"LSF",
+         "color":[
+           173, 
+           140, 
+           168
+         ]
+      },
+     {
+         "id":4,
+         "Value": 4,
+         "wte":"Plains",
+         "inputLayer":"LSF",
+         "color":[
+            234,
+            255,
+            191
+         ]
+      }
+     
+    ]
+  }

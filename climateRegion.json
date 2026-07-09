@@ -1,0 +1,230 @@
+{
+   "identifier":"bioCliSelect",
+   "url":"https://ec2-54-87-17-237.compute-1.amazonaws.com:6080/arcgis/rest/services/GlobalEcosys/Ecosystems_Global_Bioclimates_250m/ImageServer",
+   "title":"ClimateRegion",
+   "label":"Bioclimates",
+   "unit":"WTE_BioClim_Des",
+   "items":[
+    {
+         "id":1,
+         "Value": 2,
+         "wte":"Tropical Moist",
+         "inputLayer":"Bioclimate",
+         "color":[
+           118,
+           89,
+           128
+         ]
+      },
+    {
+         "id":2,
+         "Value": 3,
+         "wte":"Tropical Dry",
+         "inputLayer":"Bioclimate",
+         "color":[
+           204,
+           177,
+           122
+         ]
+      },
+    {
+         "id":3,
+         "Value": 4,
+         "wte":"Tropical Desert",
+         "inputLayer":"Bioclimate",
+         "color":[
+           204, 
+           75, 
+           56
+         ]
+      },
+    {
+         "id":4,
+         "Value": 5,
+         "wte":"Subtropical Moist",
+         "inputLayer":"Bioclimate",
+         "color":[
+          145, 
+          124, 
+          166
+         ]
+      },
+    {
+         "id":5,
+         "Value": 6,
+         "wte":"Subtropical Dry",
+         "inputLayer":"Bioclimate",
+         "color":[
+          210, 
+          191, 
+          131
+         ]
+      },
+    {
+         "id":6,
+         "Value": 7,
+         "wte":"Subtropical Desert",
+         "inputLayer":"Bioclimate",
+         "color":[
+          230, 
+          105, 
+          80
+         ]
+      },
+    {
+         "id":7,
+         "Value": 8,
+         "wte":"Subtropical Desert",
+         "inputLayer":"Bioclimate",
+         "color":[
+          230, 
+          105, 
+          80
+         ]
+      },
+    {
+         "id":8,
+         "Value": 9,
+         "wte":"Warm Temperate Moist",
+         "inputLayer":"Bioclimate",
+         "color":[
+          163, 
+          153, 
+          191
+         ]
+      },
+    {
+         "id":9,
+         "Value": 10,
+         "wte":"Warm Temperate Dry",
+         "inputLayer":"Bioclimate",
+         "color":[
+          217, 
+          204, 
+          141
+         ]
+      },
+    {
+         "id":10,
+         "Value": 11,
+         "wte":"Warm Temperate Desert",
+         "inputLayer":"Bioclimate",
+         "color":[
+          217, 
+          130, 
+          108
+         ]
+      },
+    {
+         "id":11,
+         "Value": 12,
+         "wte":"Cool Temperate Moist",
+         "inputLayer":"Bioclimate",
+         "color":[
+          168, 
+          177, 
+          204
+         ]
+      },
+    {
+         "id":12,
+         "Value": 13,
+         "wte":"Cool Temperate Dry",
+         "inputLayer":"Bioclimate",
+         "color":[
+          217, 
+          212, 
+          163
+         ]
+      },
+    {
+         "id":13,
+         "Value": 14,
+         "wte":"Cool Temperate Desert",
+         "inputLayer":"Bioclimate",
+         "color":[
+         217, 
+         160, 
+         141
+         ]
+      },
+    {
+         "id":14,
+         "Value": 15,
+         "wte":"Boreal Moist",
+         "inputLayer":"Bioclimate",
+         "color":[
+         184, 
+         200, 
+         217
+         ]
+      },
+    {
+         "id":15,
+         "Value": 16,
+         "wte":"Boreal Dry",
+         "inputLayer":"Bioclimate",
+         "color":[
+         224, 
+         224, 
+         180
+         ]
+      },
+    {
+         "id":16,
+         "Value": 17,
+         "wte":"Boreal Desert",
+         "inputLayer":"Bioclimate",
+         "color":[
+        204, 
+        175, 
+        163
+         ]
+      },
+    {
+         "id":17,
+         "Value": 18,
+         "wte":"Polar Moist",
+         "inputLayer":"Bioclimate",
+         "color":[
+        201, 
+        222, 
+        230
+         ]
+      },
+    {
+         "id":18,
+         "Value": 19,
+         "wte":"Polar Dry",
+         "inputLayer":"Bioclimate",
+         "color":[
+        224, 
+        230, 
+        207
+         ]
+      },
+    {
+         "id":19,
+         "Value": 20,
+         "wte":"Hyperthermal Dry",
+         "inputLayer":"Bioclimate",
+         "color":[
+          242, 
+          200, 
+          157
+         ]
+      },
+    {
+         "id":20,
+         "Value": 21,
+         "wte":"Hyperthermal Desert",
+         "inputLayer":"Bioclimate",
+         "color":[
+          153, 
+          41, 
+          31
+         ]
+      }
+      
+   ]
+}

@@ -1,0 +1,97 @@
+{
+   "identifier":"globeCoverCliSelect",
+   "url":"https://landscape7.arcgis.com/arcgis/rest/services/World_Land_Cover_ESA_2010/ImageServer",
+   "title": "LandCover",
+   "label":"GlobeCover",
+   "unit":"EF_GLC_Des",
+   "items":[
+      {
+         "id":0,
+         "Value": 1,
+         "wte": "Surface Water",
+         "inputLayer":"GlobeCover",
+         "color":[
+            115, 
+            223, 
+            255
+         ]
+      },
+      {
+         "id":1,
+         "Value": 2,
+         "wte": "Forest",
+         "inputLayer":"GlobeCover",
+         "color":[
+          38, 
+          115, 
+          0
+         ]
+      },
+      {
+         "id":2,
+         "Value": 3,
+         "wte": "Shrubland",
+         "inputLayer":"GlobeCover",
+         "color":[
+          205, 
+          170, 
+          102
+         ]
+      },
+      {
+         "id":3,
+         "Value": 4,
+         "wte": "Grassland",
+         "inputLayer":"GlobeCover",
+         "color":[
+          125, 
+          192, 
+          90
+         ]
+      },
+      {
+         "id":4,
+         "Value": 5,
+         "wte": "Sparsely or non- Vegetated",
+         "inputLayer":"GlobeCover",
+         "color":[
+          255, 
+          235, 
+          175
+         ]
+      },
+      {
+         "id":5,
+         "Value": 6,
+         "wte": "Cropland",
+         "inputLayer":"GlobeCover",
+         "color":[
+        245, 
+        245, 
+        122
+         ]
+      },
+      {
+         "id":6,
+         "Value": 7,
+         "wte": "Settlement",
+         "inputLayer":"GlobeCover",
+         "color":[
+        212, 
+        121, 
+        121
+         ]
+      },
+      {
+         "id":7,
+         "Value": 8,
+         "wte": "Snow or Ice",
+         "inputLayer":"GlobeCover",
+         "color":[
+        255, 
+        255, 
+        255
+         ]
+      }
+    ]
+  }
