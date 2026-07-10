@@ -1,365 +1,196 @@
-const graphicLayerId = 'crosshair';
-
-const createApplicationLayers = async (basemapLayersConfigArray) => {
-	const layersArray = [];
-	try {
-		console.log(basemapLayersConfigArray);
-		for (const layer of basemapLayersConfigArray) {
-			if (layer.type === 'group') {
-				const groupLayer = await initGroupLayer(layer);
-				console.log('the group', groupLayer);
-				layersArray.push(groupLayer);
-			}
-			if (layer.type === 'ArcGISTiledMapServiceLayer') {
-				const tileLayer = await initTileBasemapLayer(layer);
-				console.log('tileLayer', tileLayer);
-				layersArray.push(tileLayer);
-			}
-			if (layer.type === 'imageryLayer') {
-				const tileLayer = await initImageryLayer(layer);
-				console.log('tileLayer', tileLayer);
-				layersArray.push(tileLayer);
-			}
-			if (layer.type === 'imageryTileLayer') {
-				const imageryTileLayer = await initImageryTileLayer(layer);
-				console.log('tileLayer', imageryTileLayer);
-				layersArray.push(imageryTileLayer);
-			}
-			if (layer.type === 'VectorTileLayer') {
-				let vectorTileLayer;
-				if (!layer.language) {
-					vectorTileLayer = await initVectorTileBasemapLayer(layer);
-					console.log('Vector tileLayer', vectorTileLayer);
-					layersArray.push(vectorTileLayer);
+const e = 'crosshair',
+	i = async (e) => {
+		const i = [];
+		try {
+			console.log(e);
+			for (const r of e) {
+				if ('group' === r.type) {
+					const e = await s(r);
+					(console.log('the group', e), i.push(e));
 				}
-				if (layer.language && layer.language === targetLanguage) {
-					console.log('getting language version');
-					vectorTileLayer = await initVectorTileBasemapLayer(layer);
-				} else {
-					continue;
+				if ('ArcGISTiledMapServiceLayer' === r.type) {
+					const e = await l(r);
+					(console.log('tileLayer', e), i.push(e));
 				}
-				// layersArray.push(vectorTileLayer);
+				if ('imageryLayer' === r.type) {
+					const e = await a(r);
+					(console.log('tileLayer', e), i.push(e));
+				}
+				if ('imageryTileLayer' === r.type) {
+					const e = await o(r);
+					(console.log('tileLayer', e), i.push(e));
+				}
+				if ('VectorTileLayer' === r.type) {
+					let e;
+					if (
+						(r.language ||
+							((e = await t(r)), console.log('Vector tileLayer', e), i.push(e)),
+						!r.language || r.language !== targetLanguage)
+					)
+						continue;
+					(console.log('getting language version'), (e = await t(r)));
+				}
 			}
+			return (console.log('baselayers array', i), i);
+		} catch (e) {
+			console.log('error encountered while initializing all layers', e);
 		}
-
-		console.log('baselayers array', layersArray);
-		return layersArray;
-	} catch (error) {
-		console.log('error encountered while initializing all layers', error);
-	}
-};
-
-const initImageryLayer = async (layerData) => {
-	try {
-		const ImageryLayer = await $arcgis.import(
-			'@arcgis/core/layers/ImageryLayer.js',
-		);
-
-		const noMask = await newRasterFunction(layerData.rasterFunction);
-		const layer = new ImageryLayer({
-			title: layerData.title,
-			portalItem: {
-				id: layerData.itemId,
-			},
-			effect: layerData.effect || '',
-			maxScale: layerData.maxScale || 0,
-			minScale: layerData.minScale || 0,
-			visible: layerData?.visible === false ? layerData.visible : true,
-			blendMode: layerData.blendMode || 'normal',
-			interpolation: layerData.interpolation || '',
-			noData: layerData.noData || 0,
-			opacity: layerData.opacity || 1,
-		});
-
-		layer.rasterFunction = noMask;
-
-		console.log(layer);
-
-		return layer;
-	} catch (error) {
-		throw ('issue with the imagery layer construction', error);
-	}
-};
-
-const initImageryTileLayer = async (layerData) => {
-	try {
-		const ImageryTileLayer = await $arcgis.import(
-			'@arcgis/core/layers/ImageryTileLayer.js',
-		);
-
-		if (layerData.title === 'World Terrestrial Ecosystems v2 for 2015') {
-			console.log(layerData);
+	},
+	a = async (e) => {
+		try {
+			const i = await $arcgis.import('@arcgis/core/layers/ImageryLayer.js'),
+				a = await r(e.rasterFunction),
+				o = new i({
+					title: e.title,
+					portalItem: { id: e.itemId },
+					effect: e.effect || '',
+					maxScale: e.maxScale || 0,
+					minScale: e.minScale || 0,
+					visible: !1 !== e?.visible || e.visible,
+					blendMode: e.blendMode || 'normal',
+					interpolation: e.interpolation || '',
+					noData: e.noData || 0,
+					opacity: e.opacity || 1,
+				});
+			return ((o.rasterFunction = a), console.log(o), o);
+		} catch (e) {
+			throw e;
 		}
-
-		// const layerRasterFunction = await newRasterFunction(
-		// 	layerData.rasterFunction,
-		// );
-
-		const layer = new ImageryTileLayer({
-			title: layerData.title,
-			id: layerData.id || '',
-			portalItem: {
-				id: layerData.itemId,
-			},
-			effect: layerData.effect || '',
-			maxScale: layerData.maxScale || 0,
-			minScale: layerData.minScale || 0,
-			visible: layerData?.visible === false ? layerData.visible : true,
-			blendMode: layerData.blendMode || 'normal',
-			interpolation: layerData.interpolation || '',
-			noData: layerData.noData || 0,
-			rasterFunction: layerData?.rasterFunction
-				? await newRasterFunction(layerData.rasterFunction)
-				: null,
-			opacity: layerData.opacity || 1,
-		});
-
-		return layer;
-	} catch (error) {
-		console.log('issue initializing the imageryTileLayer', error);
-	}
-};
-
-const newRasterFunction = async (rasterFunctionObject) => {
-	console.log(rasterFunctionObject);
-	const [RasterFunctionUtils] = await $arcgis.import([
-		'@arcgis/core/layers/support/rasterFunctionUtils.js',
-	]);
-	console.log(rasterFunctionObject.rasterFunction);
-	if (rasterFunctionObject.rasterFunction === 'Mask') {
-		console.log('masking!');
-		const noDataMask = RasterFunctionUtils.mask({
-			includedRanges: [[0, 0]],
-		});
-
-		return noDataMask;
-	}
-
-	// const createRasterFunction = RasterFunction.fromJSON(rasterFunctionObject);
-
-	return noDataMask;
-};
-
-const initVectorTileBasemapLayer = async (layerData) => {
-	const VectorTileLayer = await $arcgis.import(
-		'@arcgis/core/layers/VectorTileLayer.js',
-	);
-
-	const layer = new VectorTileLayer({
-		title: layerData.title,
-		portalItem: {
-			id: layerData.itemId,
-		},
-		effect: layerData.effect || '',
-		maxScale: layerData.maxScale || 0,
-		minScale: layerData.minScale || 0,
-		visible: layerData?.visible === false ? layerData.visible : true,
-		opacity: layerData.opacity || 1,
-		blendMode: layerData.blendMode || 'normal',
-	});
-
-	console.log(layer);
-	return layer;
-	// return new Promise((resolve, reject) => {
-	// 	return require(['esri/layers/VectorTileLayer'], (VectorTileLayer) => {
-	// 		const vectorTileLayer = new VectorTileLayer({
-	// 			portalItem: {
-	// 				id: layerData.portalId,
-	// 				title: layerData.title,
-	// 				// maxScale: layerData.maxScale,
-	// 				// minScale: layerData.minScale,
-	// 			},
-	// 		});
-
-	// 		// vectorTileLayer.title = getString(layerData.title);
-	// 		resolve(vectorTileLayer);
-	// 	});
-	// });
-};
-
-const initTileBasemapLayer = async (layerData) => {
-	const TileLayer = await $arcgis.import('@arcgis/core/layers/TileLayer.js');
-	console.log(layerData.title, layerData.visible);
-	const layer = new TileLayer({
-		title: layerData.title,
-		portalItem: {
-			id: layerData.itemId,
-		},
-		effect: layerData.effect || '',
-		blendMode: layerData?.blendMode || 'normal',
-		opacity: layerData?.opacity || 1,
-		maxScale: layerData.maxScale || 0,
-		minScale: layerData.minScale || 0,
-		visible: layerData?.visible === false ? layerData.visible : true,
-	});
-
-	// return new Promise((resolve, reject) => {
-	// 	return require(['esri/layers/VectorTileLayer'], (VectorTileLayer) => {
-	// 		const vectorTileLayer = new TileLayer({
-	// 			portalItem: {
-	// 				id: layerData.portalId,
-	// 				title: layerData.title,
-	// 			},
-	// 		});
-
-	// 		// vectorTileLayer.title = getString(layerData.title);
-	// 		resolve(vectorTileLayer);
-	// 	});
-	// });
-	return layer;
-};
-
-const initGroupLayer = async (layerData) => {
-	const GroupLayer = await $arcgis.import('@arcgis/core/layers/GroupLayer.js');
-
-	const subLayers = await createApplicationLayers(layerData.layers);
-
-	console.log('the sub layers', subLayers);
-	const groupLayer = new GroupLayer({
-		title: layerData.title,
-		layers: subLayers,
-		effect: layerData.effect || '',
-	});
-
-	return groupLayer;
-
-	// return new Promise((resolve, reject) => {
-	// 	return require(['esri/layers/GroupLayer'], (GroupLayer) => {
-	// 		createApplicationLayers(layerData.layers).then((layers) => {
-	// 			const groupLayer = new GroupLayer({
-	// 				title: layerData.title,
-	// 				// effect: layerData.effect || '',
-	// 				// maxScale: layerData.maxScale,
-	// 				// minScale: layerData.minScale,
-	// 				layers: layers,
-	// 				// visible: layerData.visible,
-	// 			});
-	// 			resolve(groupLayer);
-	// 		});
-	// 	});
-	// });
-};
-
-const createCrossHairGraphicLayer = async () => {
-	try {
-		const [GraphicsLayer] = await $arcgis.import([
-			'@arcgis/core/layers/GraphicsLayer.js',
+	},
+	o = async (e) => {
+		try {
+			const i = await $arcgis.import('@arcgis/core/layers/ImageryTileLayer.js');
+			'World Terrestrial Ecosystems v2 for 2015' === e.title && console.log(e);
+			return new i({
+				title: e.title,
+				id: e.id || '',
+				portalItem: { id: e.itemId },
+				effect: e.effect || '',
+				maxScale: e.maxScale || 0,
+				minScale: e.minScale || 0,
+				visible: !1 !== e?.visible || e.visible,
+				blendMode: e.blendMode || 'normal',
+				interpolation: e.interpolation || '',
+				noData: e.noData || 0,
+				rasterFunction: e?.rasterFunction ? await r(e.rasterFunction) : null,
+				opacity: e.opacity || 1,
+			});
+		} catch (e) {
+			console.log('issue initializing the imageryTileLayer', e);
+		}
+	},
+	r = async (e) => {
+		console.log(e);
+		const [i] = await $arcgis.import([
+			'@arcgis/core/layers/support/rasterFunctionUtils.js',
 		]);
-		const crosshairLayer = new GraphicsLayer({
-			id: graphicLayerId,
-			title: graphicLayerId,
-			graphics: [],
+		if ((console.log(e.rasterFunction), 'Mask' === e.rasterFunction)) {
+			console.log('masking!');
+			return i.mask({ includedRanges: [[0, 0]] });
+		}
+		return noDataMask;
+	},
+	t = async (e) => {
+		const i = new (await $arcgis.import(
+			'@arcgis/core/layers/VectorTileLayer.js',
+		))({
+			title: e.title,
+			portalItem: { id: e.itemId },
+			effect: e.effect || '',
+			maxScale: e.maxScale || 0,
+			minScale: e.minScale || 0,
+			visible: !1 !== e?.visible || e.visible,
+			opacity: e.opacity || 1,
+			blendMode: e.blendMode || 'normal',
 		});
-		return crosshairLayer;
-	} catch (error) {
-		console.log('Error during graphics layer initialization.', error);
-	}
-};
-
-//NEED TO RENAME THE FUNCTION. It now contains more logic to determine if it needs to only remove the graphic
-const createNewCrosshairGraphic = async ({
-	mapPoint,
-	explorerMainMapView,
-	pixelInfo,
-}) => {
-	console.log('creating new crosshair');
-	console.log(explorerMainMapView);
-	try {
-		const [Graphic] = await $arcgis.import(['@arcgis/core/Graphic.js']);
-
-		const crosshairGraphicLayer =
-			explorerMainMapView.map.findLayerById(graphicLayerId);
-
-		crosshairGraphicLayer.graphics.removeAll();
-
-		//If there is no valid pixel, do not create a graphic
-		if (pixelInfo === false) {
-			return;
-		}
-
-		const mapPointSymbol = {
-			type: 'picture-marker',
-			url: 'libraries/images/CrosshairRed.png',
-
-			width: 33,
-			height: 33,
-			color: 'blue',
-		};
-
-		const mapPointGraphic = new Graphic({
-			symbol: mapPointSymbol,
-			geometry: mapPoint,
+		return (console.log(i), i);
+	},
+	l = async (e) => {
+		const i = await $arcgis.import('@arcgis/core/layers/TileLayer.js');
+		console.log(e.title, e.visible);
+		return new i({
+			title: e.title,
+			portalItem: { id: e.itemId },
+			effect: e.effect || '',
+			blendMode: e?.blendMode || 'normal',
+			opacity: e?.opacity || 1,
+			maxScale: e.maxScale || 0,
+			minScale: e.minScale || 0,
+			visible: !1 !== e?.visible || e.visible,
 		});
-
-		crosshairGraphicLayer.graphics.add(mapPointGraphic);
-	} catch (error) {
-		console.log('Error occurred creating crosshair graphic', error);
-	}
-};
-
-//this function will need the config Parameter
-const updateProjectionModelVisibility = async (
-	config,
-	viewElement,
-	projectionModelString,
-	changeTypeString,
-) => {
-	console.log(viewElement);
-	console.log(viewElement.firstElementChild.view);
-
-	let projectionModelLayer;
-	let ecoLayer;
-
-	const projectionViewLayers =
-		viewElement.firstElementChild.view.map.layers.items[0].layers.items;
-	const filterValueArrays = changeTypeString.split(',');
-	console.log(filterValueArrays);
-
-	const transparentColor = [0, 0, 0, 0];
-	//make all projection layers invisible.
-	//this should become it's own named function.
-	projectionViewLayers.forEach(async (layer) => {
-		//this is a bad way to find the layer. use the itemId when you get more time.
-		if (layer.title === config.dependencies__exploreLayer.title) {
-			ecoLayer = layer;
+	},
+	s = async (e) => {
+		const a = await $arcgis.import('@arcgis/core/layers/GroupLayer.js'),
+			o = await i(e.layers);
+		console.log('the sub layers', o);
+		return new a({ title: e.title, layers: o, effect: e.effect || '' });
+	},
+	n = async () => {
+		try {
+			const [i] = await $arcgis.import([
+				'@arcgis/core/layers/GraphicsLayer.js',
+			]);
+			return new i({ id: e, title: e, graphics: [] });
+		} catch (e) {
+			console.log('Error during graphics layer initialization.', e);
 		}
-		if (layer.id.includes('projection')) {
-			layer.visible = false;
-		}
-		if (layer.id.includes(projectionModelString)) {
-			projectionModelLayer = layer;
-
-			layer.renderer.uniqueValueGroups[0].classes.forEach(
-				(renderClass, index) => {
-					console.log(index);
-					if (filterValueArrays.includes(renderClass.values[0].value)) {
-						console.log(
-							config.projectionRenderer.uniqueValueGroups[0].classes[index],
-						);
-						renderClass.symbol.color =
-							config.projectionRenderer.uniqueValueGroups[0].classes[index];
-
-						return;
-					}
-					renderClass.symbol.color = transparentColor;
+	},
+	c = async ({ mapPoint: i, explorerMainMapView: a, noPixelInfo: o }) => {
+		(console.log('creating new crosshair'),
+			console.log(i),
+			console.log(a),
+			console.log(o));
+		try {
+			const [r] = await $arcgis.import(['@arcgis/core/Graphic.js']),
+				t = a.map.findLayerById(e);
+			if ((t.graphics.removeAll(), !0 === o)) return;
+			const l = new r({
+				symbol: {
+					type: 'picture-marker',
+					url: 'libraries/images/CrosshairRed.png',
+					width: 33,
+					height: 33,
+					color: 'blue',
 				},
-			);
-			layer.visible = true;
-			ecoLayer.rasterFunction = null;
-			layer.refresh();
-			console.log(layer);
+				geometry: i,
+			});
+			t.graphics.add(l);
+		} catch (e) {
+			console.log('Error occurred creating crosshair graphic', e);
 		}
-	});
-
-	// projectionModelLayer.visible = true;
-	// projectionModelLayer.refresh();
-	// console.log('filtering', projectionModelString, 'for', changeTypeString);
-	// console.log(projectionModelLayer);
-};
-
+	},
+	g = async (e, i, a, o) => {
+		let r, t;
+		(console.log(i), console.log(i.firstElementChild.view));
+		const l = i.firstElementChild.view.map.layers.items[0].layers.items,
+			s = o.split(',');
+		console.log(s);
+		const n = [0, 0, 0, 0];
+		l.forEach(async (i) => {
+			(i.title === e.dependencies__exploreLayer.title && (t = i),
+				i.id.includes('projection') && (i.visible = !1),
+				i.id.includes(a) &&
+					((r = i),
+					i.renderer.uniqueValueGroups[0].classes.forEach((i, a) => {
+						if ((console.log(a), s.includes(i.values[0].value)))
+							return (
+								console.log(
+									e.projectionRenderer.uniqueValueGroups[0].classes[a],
+								),
+								void (i.symbol.color =
+									e.projectionRenderer.uniqueValueGroups[0].classes[a])
+							);
+						i.symbol.color = n;
+					}),
+					(i.visible = !0),
+					(t.rasterFunction = null),
+					i.refresh(),
+					console.log(i)));
+		});
+	};
 export {
-	createApplicationLayers,
-	createCrossHairGraphicLayer,
-	createNewCrosshairGraphic,
-	updateProjectionModelVisibility,
+	i as createApplicationLayers,
+	n as createCrossHairGraphicLayer,
+	c as createNewCrosshairGraphic,
+	g as updateProjectionModelVisibility,
 };

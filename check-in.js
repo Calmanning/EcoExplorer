@@ -1,82 +1,44 @@
-import { initApp } from './main.js?v=0.01';
-
-const checkInContainerID = 'checkIn-container';
-const inputContainerClass = 'input-container';
-const incorrectClass = 'incorrect';
-const inputId = 'password';
-const buttonId = 'submitBtn';
-const phrase = 'DoNotReshare!';
-
-const checkInHTML = `
-<div class='${inputContainerClass}'>
-  
-    <label for="password">Password, please</label>
-    <input 
-      type="text" 
-      id="${inputId}"
-      name="password" 
-      placeholder="Enter password" 
-      autocomplete="off"
-    >
-    <button type="button" id='${buttonId}' class='btn'>Enter</button>
-  
-</div>`;
-
-const checkIn = () => {
-	console.log('begin check in');
-	const checkInComponent = addCheckInToDocument();
-	console.log(checkInComponent);
-
-	const passwordInput = document.getElementById(`${inputId}`);
-	console.log(passwordInput);
-
-	const buttonElement = document.getElementById(`${buttonId}`);
-	console.log(buttonElement);
-
-	passwordInput.addEventListener('keydown', (event) => {
-		console.log('keydown');
-		if (event.key === 'Enter') {
-			const passwordInputValue = passwordInput.value;
-			if (passwordInputValue === phrase) {
-				event.preventDefault();
-				console.log('true', passwordInputValue);
-				checkInComponent.remove();
-				initApp();
-				return true;
-			} else {
-				passwordInput.value = '';
-				passwordInput.placeholder = 'Try again';
-			}
-		}
-	});
-
-	buttonElement.addEventListener('click', (event) => {
-		event.preventDefault();
-
-		console.log('input');
-		console.log(passwordInput.value);
-
-		const passwordInputValue = passwordInput.value;
-		if (passwordInputValue === phrase) {
-			console.log('true', passwordInputValue);
-			checkInComponent.remove();
-			initApp();
-			return true;
-		} else {
-			passwordInput.value = '';
-			passwordInput.placeholder = 'Try again';
-		}
-	});
-};
-
-const addCheckInToDocument = () => {
-	const checkInContainer = document.createElement('div');
-	checkInContainer.id = checkInContainerID;
-
-	checkInContainer.innerHTML = checkInHTML;
-
-	document.body.prepend(checkInContainer);
-	return checkInContainer;
-};
-
-export { checkIn };
+import { initApp as e } from './main.js?v=0.01';
+const n = 'password',
+	o = 'submitBtn',
+	t = 'DoNotReshare!',
+	l = `\n<div class='input-container'>\n  \n    <label for="password">Password, please</label>\n    <input \n      type="text" \n      id="${n}"\n      name="password" \n      placeholder="Enter password" \n      autocomplete="off"\n    >\n    <button type="button" id='${o}' class='btn'>Enter</button>\n  \n</div>`,
+	r = () => {
+		console.log('begin check in');
+		const l = s();
+		console.log(l);
+		const r = document.getElementById(`${n}`);
+		console.log(r);
+		const c = document.getElementById(`${o}`);
+		(console.log(c),
+			r.addEventListener('keydown', (n) => {
+				if ((console.log('keydown'), 'Enter' === n.key)) {
+					const o = r.value;
+					if (o === t)
+						return (
+							n.preventDefault(),
+							console.log('true', o),
+							l.remove(),
+							e(),
+							!0
+						);
+					((r.value = ''), (r.placeholder = 'Try again'));
+				}
+			}),
+			c.addEventListener('click', (n) => {
+				(n.preventDefault(), console.log('input'), console.log(r.value));
+				const o = r.value;
+				if (o === t) return (console.log('true', o), l.remove(), e(), !0);
+				((r.value = ''), (r.placeholder = 'Try again'));
+			}));
+	},
+	s = () => {
+		const e = document.createElement('div');
+		return (
+			(e.id = 'checkIn-container'),
+			(e.innerHTML = l),
+			document.body.prepend(e),
+			e
+		);
+	};
+export { r as checkIn };

@@ -1,170 +1,102 @@
-import { checkIn } from './check-in.js?v=0.01';
-import { config } from './config.js?v=0.01';
+import { checkIn as o } from './check-in.js?v=0.01';
+import { config as s } from './config.js?v=0.01';
 import {
-	authorization,
-	getCredentials,
-	get_DEV_token,
+	authorization as a,
+	getCredentials as e,
+	get_DEV_token as i,
 } from './js/utils/Oauth.js?v=0.01';
 import {
-	parseAndFormatURL,
-	formatExtentParametersAndUpdateHashParams,
-	updateHashParamString,
-	// formatViewModeParametersAndUpdateHashParams,
+	parseAndFormatURL as t,
+	formatExtentParametersAndUpdateHashParams as r,
+	updateHashParamString as n,
 } from './js/utils/URL_params.js?v=0.01';
 import {
-	ELU_FeatureStrings,
-	getAttributeTable,
-	mapClickEventDelegation,
-	exploreMaps_SelectionProcess,
+	ELU_FeatureStrings as l,
+	getAttributeTable as c,
+	mapClickEventDelegation as p,
+	exploreMaps_SelectionProcess as m,
 } from './js/data.js?v=0.01';
 import {
-	buildAppHTML,
-	buildExplorerMode,
-	buildEcosystemProjectionView,
-	initExplorerViewComponents,
-	DOM_id_class_variables,
-	showInvalidNotificationDiv,
-	showInvalidMapLocationNotificationDiv,
+	buildAppHTML as v,
+	buildExplorerMode as f,
+	buildEcosystemProjectionView as j,
+	initExplorerViewComponents as d,
+	DOM_id_class_variables as w,
+	showInvalidNotificationDiv as g,
+	showInvalidMapLocationNotificationDiv as h,
 } from './js/components.js?v=0.01';
 import {
-	updateProjectionModelVisibility,
-	createNewCrosshairGraphic,
+	updateProjectionModelVisibility as u,
+	createNewCrosshairGraphic as _,
 } from './js/layers.js?v=0.01';
 import {
-	initExplorerMapViews,
-	initExplorerViewListeners,
-	viewClickEvent,
+	initExplorerMapViews as E,
+	initExplorerViewListeners as k,
+	viewClickEvent as x,
 } from './js/view.js?v=0.01';
-import { addExportFormToMap } from './js/utils/exportMap.js?v=0.01';
+import { addExportFormToMap as P } from './js/utils/exportMap.js?v=0.01';
 import {
-	setViewMode,
-	changeViewMode,
-	dropdownEvents,
-	initAppTopLevelEventListener,
+	setViewMode as C,
+	changeViewMode as D,
+	dropdownEvents as L,
+	initAppTopLevelEventListener as O,
 } from './js/utils/applicationEvents.js?v=0.01';
-
-console.log(checkIn);
-checkIn();
-
-const initApp = async () => {
+console.log(o);
+const b = async () => {
 	try {
-		// console.log('oAuth', oAuthResponse);
-		const hashParams = parseAndFormatURL();
-		const sessionToken = await get_DEV_token(config);
-
-		const landformELUCategories = ELU_FeatureStrings;
-		const explorerLookupTable = await getAttributeTable(
-			config.dependencies__exploreLayer.url,
-			sessionToken,
-		);
-		console.log(explorerLookupTable);
-
-		//what is going on here? double check this
-		//the variable for the other mapView that will display change in ecosystems
-		//I don't think this is a good variable name. It doesn't just contain the 'change mode' HTML. it has everything.
-		const changeView = buildAppHTML(
-			config,
-			changeViewMode,
-			hashParams,
-			getCredentials,
-			updateProjectionModelVisibility,
-		);
-		const userPortalData = await authorization(config);
-		const ecosystem2050ProjectionsViewMap =
-			buildEcosystemProjectionView(hashParams);
-
-		console.log(sessionToken);
-
-		console.log('portal data', userPortalData);
-		// getCredentials();
-		//Setting up 'arcgis-map' elements for . Each of the smaller 'map' elements will contain a dropdown
-		const explorerViewComponents = initExplorerViewComponents({
-			config,
-			DOM_id_class_variables,
-			hashParams,
-			landformELUCategories,
-			dropdownEvents,
-			mapClickEventDelegation,
-			explorerLookupTable,
-			parseAndFormatURL,
-			showInvalidNotificationDiv,
-			createNewCrosshairGraphic,
+		const o = t(),
+			k = await i(s),
+			C = l,
+			b = await c(s.dependencies__exploreLayer.url, k);
+		console.log(b);
+		v(s, D, o, e, u);
+		const y = await a(s),
+			M = j(o);
+		(console.log(k), console.log('portal data', y));
+		const N = d({
+				config: s,
+				DOM_id_class_variables: w,
+				hashParams: o,
+				landformELUCategories: C,
+				dropdownEvents: L,
+				mapClickEventDelegation: p,
+				explorerLookupTable: b,
+				parseAndFormatURL: t,
+				showInvalidNotificationDiv: g,
+				createNewCrosshairGraphic: _,
+			}),
+			S = await f({ explorerViewComponents: N });
+		S.push(M);
+		const U = await E({
+			viewElements: S,
+			config: s,
+			hashParams: o,
+			formatExtentParametersAndUpdateHashParams: r,
+			sessionToken: k,
+			viewClickEvent: x,
+			DOM_id_class_variables: w,
 		});
-
-		const viewElements = await buildExplorerMode({ explorerViewComponents });
-		viewElements.push(ecosystem2050ProjectionsViewMap);
-
-		const mapViews = await initExplorerMapViews({
-			viewElements,
-			config,
-			hashParams,
-			formatExtentParametersAndUpdateHashParams,
-			sessionToken,
-			viewClickEvent,
-			DOM_id_class_variables,
-		});
-
-		const mapViews_clickEvent = viewClickEvent(
-			config,
-			sessionToken,
-			mapViews,
-			mapClickEventDelegation,
-			DOM_id_class_variables,
-			explorerLookupTable,
-			showInvalidMapLocationNotificationDiv,
-			updateHashParamString,
-		);
-
-		// await initExplorerViewListeners({
-		// 	mapViews,
-		// 	formatExtentParametersAndUpdateHashParams,
-		// });
-
-		initAppTopLevelEventListener(
-			config,
-			DOM_id_class_variables,
-			hashParams,
-			mapViews,
-			getCredentials,
-			addExportFormToMap,
-			parseAndFormatURL,
-			userPortalData,
-		);
-
-		if (hashParams['loc'] || !hashParams['loc']) {
+		x(s, k, U, p, w, b, h, n);
+		if ((O(s, w, o, U, e, P, t, y), o.loc || !o.loc)) {
 			console.log('PREVSIOUS SESSION');
-			const Point = await $arcgis.import('@arcgis/core/geometry/Point.js');
-			const previousSessionLocation = hashParams['loc']?.split(',') || [
-				-117.15, 32.73,
-			];
-			//the main explorer mode view
-			const mapViewElement = viewElements[0];
-
-			const previousMapPoint = new Point({
-				latitude: previousSessionLocation[1],
-				longitude: previousSessionLocation[0],
+			const a = await $arcgis.import('@arcgis/core/geometry/Point.js'),
+				e = o.loc?.split(',') || [-117.15, 32.73],
+				i = S[0],
+				t = new a({ latitude: e[1], longitude: e[0] });
+			m({
+				config: s,
+				sessionToken: k,
+				DOM_id_class_variables: w,
+				explorerLookupTable: b,
+				showInvalidNotificationDiv: g,
+				createNewCrosshairGraphic: _,
+				previousMapPoint: t,
+				mapViewElement: i,
 			});
-
-			exploreMaps_SelectionProcess({
-				config,
-				sessionToken,
-				DOM_id_class_variables,
-				explorerLookupTable,
-				showInvalidNotificationDiv,
-				createNewCrosshairGraphic,
-				previousMapPoint,
-				mapViewElement,
-			});
-			// createNewCrosshairGraphic({ mapPoint, mapView });
 		}
-		// if (hashParams['export'] === true) {
-		// 	console.log('export happening');
-		// }
-	} catch (error) {
-		console.log(error);
+	} catch (o) {
+		console.log(o);
 	}
 };
-
-// initApp();
-
-export { initApp };
+b();
+export { b as initApp };
