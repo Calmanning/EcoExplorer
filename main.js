@@ -2,28 +2,28 @@ import { checkIn as o } from './check-in.js?v=0.01';
 import { config as s } from './config.js?v=0.01';
 import {
 	authorization as a,
-	getCredentials as e,
-	get_DEV_token as i,
+	getCredentials as i,
+	get_DEV_token as e,
 } from './js/utils/Oauth.js?v=0.01';
 import {
-	parseAndFormatURL as t,
-	formatExtentParametersAndUpdateHashParams as r,
+	parseAndFormatURL as r,
+	formatExtentParametersAndUpdateHashParams as t,
 	updateHashParamString as n,
 } from './js/utils/URL_params.js?v=0.01';
 import {
 	ELU_FeatureStrings as l,
-	getAttributeTable as c,
-	mapClickEventDelegation as p,
-	exploreMaps_SelectionProcess as m,
+	getAttributeTable as p,
+	mapClickEventDelegation as m,
+	exploreMaps_SelectionProcess as c,
 } from './js/data.js?v=0.01';
 import {
 	buildAppHTML as v,
 	buildExplorerMode as f,
 	buildEcosystemProjectionView as j,
-	initExplorerViewComponents as d,
-	DOM_id_class_variables as w,
-	showInvalidNotificationDiv as g,
-	showInvalidMapLocationNotificationDiv as h,
+	initExplorerViewComponents as w,
+	DOM_id_class_variables as d,
+	showInvalidNotificationDiv as h,
+	showInvalidMapLocationNotificationDiv as g,
 } from './js/components.js?v=0.01';
 import {
 	updateProjectionModelVisibility as u,
@@ -41,28 +41,25 @@ import {
 	dropdownEvents as L,
 	initAppTopLevelEventListener as O,
 } from './js/utils/applicationEvents.js?v=0.01';
-console.log(o);
+o();
 const b = async () => {
 	try {
-		const o = t(),
-			k = await i(s),
+		const o = r(),
+			k = await e(s),
 			C = l,
-			b = await c(s.dependencies__exploreLayer.url, k);
-		console.log(b);
-		v(s, D, o, e, u);
-		const y = await a(s),
-			M = j(o);
-		(console.log(k), console.log('portal data', y));
-		const N = d({
+			b = await p(s.dependencies__exploreLayer.url, k),
+			y = (v(s, D, o, i, u), await a(s)),
+			M = j(o),
+			N = w({
 				config: s,
-				DOM_id_class_variables: w,
+				DOM_id_class_variables: d,
 				hashParams: o,
 				landformELUCategories: C,
 				dropdownEvents: L,
-				mapClickEventDelegation: p,
+				mapClickEventDelegation: m,
 				explorerLookupTable: b,
-				parseAndFormatURL: t,
-				showInvalidNotificationDiv: g,
+				parseAndFormatURL: r,
+				showInvalidNotificationDiv: h,
 				createNewCrosshairGraphic: _,
 			}),
 			S = await f({ explorerViewComponents: N });
@@ -71,32 +68,31 @@ const b = async () => {
 			viewElements: S,
 			config: s,
 			hashParams: o,
-			formatExtentParametersAndUpdateHashParams: r,
+			formatExtentParametersAndUpdateHashParams: t,
 			sessionToken: k,
 			viewClickEvent: x,
-			DOM_id_class_variables: w,
+			DOM_id_class_variables: d,
 		});
-		x(s, k, U, p, w, b, h, n);
-		if ((O(s, w, o, U, e, P, t, y), o.loc || !o.loc)) {
+		x(s, k, U, m, d, b, g, n);
+		if ((O(s, d, o, U, i, P, r, y), o.loc || !o.loc)) {
 			console.log('PREVSIOUS SESSION');
 			const a = await $arcgis.import('@arcgis/core/geometry/Point.js'),
-				e = o.loc?.split(',') || [-117.15, 32.73],
-				i = S[0],
-				t = new a({ latitude: e[1], longitude: e[0] });
-			m({
+				i = o.loc?.split(',') || [-117.15, 32.73],
+				e = S[0],
+				r = new a({ latitude: i[1], longitude: i[0] });
+			c({
 				config: s,
 				sessionToken: k,
-				DOM_id_class_variables: w,
+				DOM_id_class_variables: d,
 				explorerLookupTable: b,
-				showInvalidNotificationDiv: g,
+				showInvalidNotificationDiv: h,
 				createNewCrosshairGraphic: _,
-				previousMapPoint: t,
-				mapViewElement: i,
+				previousMapPoint: r,
+				mapViewElement: e,
 			});
 		}
 	} catch (o) {
 		console.log(o);
 	}
 };
-b();
 export { b as initApp };
