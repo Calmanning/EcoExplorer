@@ -1,14 +1,17 @@
 {
    "identifier":"globeCoverCliSelect",
    "url":"https://landscape7.arcgis.com/arcgis/rest/services/World_Land_Cover_ESA_2010/ImageServer",
-   "title": "LandCover",
+   "title": "Land Cover",
+   "elementID":"landCover",
    "label":"GlobeCover",
+   "tooltip":"In the context of ecosystem settings, land cover represents the most general type of ecological response to the opportunities landform and climate provide.",
    "unit":"EF_GLC_Des",
    "items":[
       {
          "id":0,
          "Value": 1,
          "wte": "Surface Water",
+         "tooltip":"Visible water including lakes, ponds, rivers, reservoirs, wetlands, and oceans. These are vital to life because they provide drinking water, habitat, food, and movement pathways.",
          "inputLayer":"GlobeCover",
          "color":[
             115, 
@@ -20,6 +23,7 @@
          "id":1,
          "Value": 2,
          "wte": "Forest",
+         "tooltip":"Tree-dominated landscapes with continuous or nearly continuous deciduous or evergreen tree canopy.",
          "inputLayer":"GlobeCover",
          "color":[
           38, 
@@ -31,6 +35,7 @@
          "id":2,
          "Value": 3,
          "wte": "Shrubland",
+         "tooltip":"Landscapes with discontinuous or semi-continuous patches of woody shrubs, typically under five meters in height occur.",
          "inputLayer":"GlobeCover",
          "color":[
           205, 
@@ -42,6 +47,7 @@
          "id":3,
          "Value": 4,
          "wte": "Grassland",
+         "tooltip":"Grasslands are continuous areas of short, tall, wet, mixed, non-woody grasses. Land cover data does not distinguish similar, but ecologically distinct areas of rhizomes or savannahs.",
          "inputLayer":"GlobeCover",
          "color":[
           125, 
@@ -52,7 +58,8 @@
       {
          "id":4,
          "Value": 5,
-         "wte": "Sparsely or non- Vegetated",
+         "wte": "Sparsely or Non-Vegetated",
+         "tooltip":"Includes areas of sparse moss, lichens, or other small plant species. Also included are bare areas that lack soil. These landscapes are often too dry, or too cold to support other vegetation.",
          "inputLayer":"GlobeCover",
          "color":[
           255, 
@@ -64,6 +71,7 @@
          "id":5,
          "Value": 6,
          "wte": "Cropland",
+         "tooltip":"Land used primarily to grow crops for food, fiber, or other agricultural products. Natural vegetation has largely been replaced by cultivated plants.",
          "inputLayer":"GlobeCover",
          "color":[
         245, 
@@ -75,6 +83,7 @@
          "id":6,
          "Value": 7,
          "wte": "Settlement",
+         "tooltip":"Areas where buildings, roads, and other human-made structures dominate the landscape. This includes cities, towns, suburbs, and other infrastructure.",
          "inputLayer":"GlobeCover",
          "color":[
         212, 
@@ -86,11 +95,24 @@
          "id":7,
          "Value": 8,
          "wte": "Snow or Ice",
+         "tooltip":"Land that is covered year-round or most of the year by permanent snow, glaciers, or ice sheets.",
          "inputLayer":"GlobeCover",
          "color":[
         255, 
         255, 
         255
+         ]
+      },
+      {
+         "id":8,
+         "Value": 9,
+         "wte":"N/A",
+         "tooltip":"Areas without a corresponding definition.",
+         "inputLayer":"GlobeCover",
+         "color":[
+          0, 
+          0, 
+          0
          ]
       }
     ]

@@ -1,13 +1,16 @@
 {"identifier":"landformsCliSelect",
    "url":"https://landscape7.arcgis.com/arcgis/rest/services/World_Landforms_Improved_Hammond_Method/ImageServer",
    "title": "Landform",
+   "elementID": "landform",
    "label":"Landforms",
+   "tooltip": "In the context of ecosystem settings, landforms are areas of similar topographic character based on elevation range, slope, and the distribution of upland and lowland areas.",
    "unit":"EF_LSF_Des",
    "items":[
       {
          "id":1, 
          "Value": 1,
          "wte":"Mountains",
+         "tooltip":"Mountains support unusually rich ecological diversity because their steep often isolated terrain. Mountains support many different habitats divided by elevation ranges and the direction a slope faces.",
          "inputLayer":"LSF",
          "color":[
            205, 
@@ -19,6 +22,7 @@
          "id":2, 
          "Value": 2,
          "wte":"Hills",
+         "tooltip":"Hills are often natural bridges between lowlands and uplands. Their varied slopes, soils, and moisture conditions create a mix of often overlapping habitats with relatively high levels of biodiversity.",
          "inputLayer":"LSF",
          "color":[
             123,
@@ -30,6 +34,7 @@
          "id":3, 
          "Value": 3,
          "wte":"Tablelands",
+         "tooltip":"Tablelands include broad plateaus, canyonlands, mesas, buttes, and sky islands. Strong contrasts between high upland surfaces and lower surrounding terrain divide habitats by limiting movement between them.",
          "inputLayer":"LSF",
          "color":[
            173, 
@@ -41,11 +46,24 @@
          "id":4,
          "Value": 4,
          "wte":"Plains",
+         "tooltip": "Plains are wide, relatively flat landscapes found at many elevations. They often have less ecological variety per unit of area than other landforms, but they can be extremely productive.",
          "inputLayer":"LSF",
          "color":[
             234,
             255,
             191
+         ]
+      },
+     {
+         "id":5,
+         "Value": 5,
+         "wte":"N/A",
+         "tooltip":"Areas without a corresponding definition.",
+         "inputLayer":"LSF",
+         "color":[
+          0, 
+          0, 
+          0
          ]
       }
      

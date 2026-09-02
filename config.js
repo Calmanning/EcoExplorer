@@ -1,4 +1,5 @@
 const config = {
+	defaultLanguage: 'en',
 	portalURL: 'https://www.arcgis.com/',
 	portalAuthentication: false,
 	//this is a test/DEV clientID
@@ -6,12 +7,15 @@ const config = {
 	appId: 'mz09wz68zh2LA6m3',
 
 	view: {
+		//poland
+		locCenter: [17.8, 53.31],
+		extCenter: [17.06, 53.27],
 		//San Diego
-		center: [-117.15, 32.73],
+		// center: [-117.15, 32.73],
 		//Japan
 		// center: [137, 36],
 		//county-level zoom
-		zoom: 10,
+		zoom: 4,
 		//country-level
 		// zoom: 7,
 		constraints__minZoom: 3,
@@ -23,13 +27,6 @@ const config = {
 		title: 'World Terrestrial Ecosystems v2 for 2015',
 		itemId: '2e315bb2cd3547d3ac6bfcaaa3daac4f',
 		url: 'https://tiledimageservices.arcgis.com/jIL9msH9OI208GCb/arcgis/rest/services/WTEWTE_2015_Chelsa_Chen__HammondLayer/ImageServer',
-
-		//This is the ELU version of Ecosystem data
-		// title: 'World Ecophysiographic Land Units 2015',
-		// // itemId: '140af3e5389a4afcb421ee4633d18d3a',
-		// //This is a proxy f the service
-		// itemId: '57cf74e9044744c88e9d705106d92ee2',
-		// url: 'https://landscape7.arcgis.com/arcgis/rest/services/World_Ecophysiographic_Land_Units_2015/ImageServer',
 	},
 	operationalLayers: [
 		{
@@ -85,6 +82,10 @@ const config = {
 			url: 'https://services.arcgisonline.com/arcgis/rest/services/Elevation/World_Hillshade_Dark/MapServer',
 			type: 'ArcGISTiledMapServiceLayer',
 			effect: 'brightness(50%) contrast(100%)',
+			// effect: [
+			// 	{ type: 'brightness', amount: 0.5 },
+			// 	{ type: 'contrast', amount: 1 },
+			// ],
 			// blendMode: 'soft-light',
 			opacity: 1,
 			// isReference: true,
@@ -103,6 +104,10 @@ const config = {
 			itemId: 'fe4e4b2f467243468bd5d15f02f9ad4c',
 			url: 'https://arcgis-content.maps.arcgis.com/home/item.html?id=fe4e4b2f467243468bd5d15f02f9ad4c',
 			type: 'VectorTileLayer',
+			// effect: [
+			// 	{ type: 'hue-rotate', angle: 180 },
+			// 	{ type: 'invert', amount: 1 },
+			// ],
 			effect: 'invert(100%) hue-rotate(180deg)',
 			opacity: 0.6,
 		},
@@ -123,7 +128,7 @@ const config = {
 		},
 		{
 			title: 'Projected Change Types for WTEs in 2050 (SSP3-7.0)', //'high emissions'
-			id: '2050-current-projection',
+			id: '2050-self-reliant-projection',
 			itemId: 'c3158a91348f4b8b98315aa9eb8cab51',
 			url: 'https://tiledimageservices.arcgis.com/jIL9msH9OI208GCb/arcgis/rest/services/RCP_SSP370_WTE_ChangeTypeClass/ImageServer',
 			type: 'imageryTileLayer',
@@ -146,6 +151,13 @@ const config = {
 			visible: false,
 		},
 	],
+	projectionRenderClassValues: {
+		aridity: ['2', '4', '6'],
+		temperature: ['1', '4', '5'],
+		landCover: ['3', '5', '6'],
+		total__changes: ['1', '2', '3', '4', '5', '6'],
+		all__changes: ['7'],
+	},
 	projectionRenderer: {
 		type: 'uniqueValue',
 		field1: 'Value',

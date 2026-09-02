@@ -1,430 +1,920 @@
-import e from '../landform.json' with { type: 'json' };
-import o from '../landCover.json' with { type: 'json' };
-import t from '../climateRegion.json' with { type: 'json' };
-new AbortController();
-const r = (e) => {
-		const o = e.items.map((e) => e.wte);
-		return { title: e.title, features: [...new Set(o)] };
-	},
-	l = (({ arrayOfJSONs: e }) => {
-		console.log(e);
-		const o = e.map((e) => r(e));
-		return (console.log(o), o);
-	})({ arrayOfJSONs: [e, o, t] }),
-	s = ({
-		event: e,
-		config: o,
-		sessionToken: t,
-		DOM_id_class_variables: r,
-		explorerLookupTable: l,
-		showInvalidNotificationDiv: s,
-		createNewCrosshairGraphic: n,
-	}) => {
-		(console.log(s),
-			console.log(`.${r.dropDownClass}`),
-			console.log(e.target?.closest(`.${r.dropDownClass}`)),
-			e.target?.closest(`#${r.projection_containerDiv}`) ||
-				(e.target?.closest(`.${r.dropDownClass}`)
-					? a({
-							event: e,
-							config: o,
-							sessionToken: t,
-							explorerLookupTable: l,
-							DOM_id_class_variables: r,
-							showInvalidNotificationDiv: s,
-							createNewCrosshairGraphic: n,
-						})
-					: e.target?.closest(`#${r.explorer_containerDiv}`) &&
-						i({
-							event: e,
-							config: o,
-							sessionToken: t,
-							DOM_id_class_variables: r,
-							explorerLookupTable: l,
-							showInvalidNotificationDiv: s,
-							createNewCrosshairGraphic: n,
-						})));
-	},
-	a = ({
-		event: r,
-		config: l,
-		sessionToken: s,
-		explorerLookupTable: a,
-		DOM_id_class_variables: i,
-		showInvalidNotificationDiv: n,
-		createNewCrosshairGraphic: d,
-	}) => {
-		(console.log('dropdown Choice!'), console.log('the graphic function', n));
-		const g = r.target?.closest(`#${i.explorer_containerDiv}`);
-		console.log(g);
-		const h = g.querySelector(`#${i.explorer_ecosystems}`),
-			C = g.querySelectorAll(`.${i.dropDownDisplayClass}`),
-			y = [];
-		C.forEach((e) => {
-			console.log(e.innerHTML);
-			const o = e.innerHTML;
-			(console.log(o), y.push(o));
-		});
-		const _ = b(y, a);
-		if ((console.log(_), r.target.closest(`#${e.title}`))) {
-			const o = r.target.closest(`#${e.title}`),
-				t = r.target.attributes.value.value,
-				s = f({ selectedLandform: t, explorerLookupTable: a });
-			(console.log(s), c(o, l, s, i));
-		}
-		if (r.target.closest(`#${o.title}`)) {
-			const e = r.target.closest(`#${o.title}`),
-				t = r.target.attributes.value.value,
-				s = m({ selectedLandCover: t, explorerLookupTable: a });
-			(console.log(s), p(e, l, s, i));
-		}
-		if (r.target.closest(`#${t.title}`)) {
-			const e = r.target.closest(`#${t.title}`),
-				o = r.target.attributes.value.value,
-				s = v({ selectedClimateRegion: o, explorerLookupTable: a });
-			(console.log(s), u(e, l, s, i));
-		}
-		w({
-			config: l,
-			mainExplorerContainer: h,
-			pixelValue: _,
-			showInvalidNotificationDiv: n,
-			DOM_id_class_variables: i,
-			createNewCrosshairGraphic: d,
-		});
-	},
-	i = async ({
-		event: r,
-		config: l,
-		sessionToken: s,
-		DOM_id_class_variables: a,
-		explorerLookupTable: i,
-		showInvalidNotificationDiv: d,
-		createNewCrosshairGraphic: b,
-		previousMapPoint: C,
-		mapViewElement: y,
-	}) => {
-		try {
-			const _ = r?.target.closest('#explore') || y.closest('#explore');
-			(console.log('This is the explorerViewContainer?', _),
-				console.log(_.querySelector(`#${a.explorer_ecosystems}`)));
-			const x = _.querySelector(`#${a.explorer_ecosystems}`),
-				L = x.view,
-				D = r?.target.map || L.map,
-				T = _.querySelector(`#${e.title}`),
-				M = _.querySelector(`#${o.title}`),
-				N = _.querySelector(`#${t.title}`),
-				$ = l.dependencies__exploreLayer.url,
-				O = C || r?.detail.mapPoint.clone().normalize(),
-				k = D.layers.items[0].layers.items.find((e) => {
-					if (
-						(console.log(e),
-						e.portalItem.id === l.dependencies__exploreLayer.itemId)
-					)
-						return e;
-				}),
-				I = await g($, s, O, k);
-			if (
-				(console.log('the PIXEL VALUE FROM THE SELECTION PROCESS', I),
-				null == I.value)
-			)
-				return void d({ DOM_id_class_variables: a });
-			const E = I.value[0];
-			console.log(E);
-			const S = h(E, i);
-			console.log('from the central map point process', S);
-			const P = f({ eluAttributes: S, explorerLookupTable: i }),
-				G = m({ eluAttributes: S, explorerLookupTable: i }),
-				A = v({ eluAttributes: S, explorerLookupTable: i });
-			if (
-				((r?.target.id === a.explorer_ecosystems || C) &&
-					(console.log(C, 'IS TRUE'),
-					w({
-						config: l,
-						mapPoint: O,
-						mainExplorerContainer: x,
-						eluAttributes: S,
-						event: r,
-						showInvalidNotificationDiv: d,
-						createNewCrosshairGraphic: b,
-					}),
-					c(T, l, P, a),
-					p(M, l, G, a),
-					u(N, l, A, a)),
-				r?.target.id === e.title)
-			)
-				try {
-					(await c(T, l, P, a),
-						n({
-							event: r,
-							config: l,
-							explorerLookupTable: i,
-							DOM_id_class_variables: a,
-							showInvalidNotificationDiv: d,
-							createNewCrosshairGraphic: b,
-						}));
-				} catch (e) {
-					console.log(
-						'error updating raster functions for the landform pixels before updating main map',
-						e,
-					);
-				}
-			if (r?.target.id === o.title)
-				try {
-					(await p(M, l, G, a),
-						n({
-							event: r,
-							config: l,
-							explorerLookupTable: i,
-							DOM_id_class_variables: a,
-							showInvalidNotificationDiv: d,
-							createNewCrosshairGraphic: b,
-						}));
-				} catch (e) {
-					console.log(
-						'error updating raster functions for the land cover pixels before updating main map',
-						e,
-					);
-				}
-			if (r?.target.id === t.title)
-				try {
-					(await u(N, l, A, a),
-						n({
-							event: r,
-							config: l,
-							explorerLookupTable: i,
-							DOM_id_class_variables: a,
-							showInvalidNotificationDiv: d,
-							createNewCrosshairGraphic: b,
-						}));
-				} catch (e) {
-					console.log(
-						'error updating raster functions for the climate region pixels before updating main map',
-						e,
-					);
-				}
-		} catch (e) {
-			console.log(
-				'Encountered error processing the click event for updating the render functions of one of the explorer-oriented maps',
-				e,
-			);
-		}
-	},
-	n = ({
-		event: e,
-		config: o,
-		explorerLookupTable: t,
-		DOM_id_class_variables: r,
-		showInvalidNotificationDiv: l,
-		createNewCrosshairGraphic: s,
-	}) => {
-		console.log('from the minimap event!!!', e);
-		const a = e.detail.mapPoint.clone().normalize(),
-			i = e.target?.closest(`#${r.explorer_containerDiv}`);
-		console.log(i);
-		const n = i.querySelector(`#${r.explorer_ecosystems}`),
-			c = i.querySelectorAll(`.${r.dropDownDisplayClass}`),
-			p = [];
-		c.forEach((e) => {
-			console.log(e.innerHTML);
-			const o = e.innerHTML;
-			(console.log(o), p.push(o));
-		});
-		const u = b(p, t);
-		(console.log('THE PIXEL VALUE FROM THE DROPDOWN COMPONENTS', u),
-			w({
-				config: o,
-				mapPoint: a,
-				mainExplorerContainer: n,
-				pixelValue: u,
-				showInvalidNotificationDiv: l,
-				DOM_id_class_variables: r,
-				createNewCrosshairGraphic: s,
-			}));
-	},
-	c = async (e, o, t, r) => {
-		try {
-			let l;
-			const s = e.querySelector(`.${r.dropDownDisplayClass}`),
-				a = t,
-				i = await C({ eluData: a });
-			(e.view.map.layers.items[0].layers.items.find((e) => {
-				e.title !== o.dependencies__exploreLayer.title || (l = e);
-			}),
-				(s.innerHTML = a[0].attributes.LandFrmCls),
-				s.classList.remove(r.dropDownPlaceHolderClass),
-				(l.renderer = null),
-				(l.rasterFunction = i));
-		} catch (e) {
-			console.log('error updating landform raster function', e);
-		}
-	},
-	p = async (e, o, t, r) => {
-		try {
-			let l;
-			const s = e.querySelector(`.${r.dropDownDisplayClass}`),
-				a = t,
-				i = await C({ eluData: a });
-			(e.view.map.layers.items[0].layers.items.find((e) => {
-				e.title !== o.dependencies__exploreLayer.title || (l = e);
-			}),
-				(s.innerHTML = a[0].attributes.LandCovCls),
-				s.classList.remove(r.dropDownPlaceHolderClass),
-				(l.renderer = null),
-				(l.rasterFunction = i));
-		} catch (e) {
-			console.log('error updating land cover raster function', e);
-		}
-	},
-	u = async (e, o, t, r) => {
-		try {
-			let l;
-			const s = e.querySelector(`.${r.dropDownDisplayClass}`),
-				a = t,
-				i = await C({ eluData: a });
-			(e.view.map.layers.items[0].layers.items.find((e) => {
-				e.title !== o.dependencies__exploreLayer.title || (l = e);
-			}),
-				(s.innerHTML = a[0].attributes.BioClimCls),
-				s.classList.remove(r.dropDownPlaceHolderClass),
-				(l.renderer = null),
-				(l.rasterFunction = i));
-		} catch (e) {
-			console.log('error updating climate region raster function', e);
-		}
-	},
-	d = async (e, o) => {
-		const t = fetch(`${e}/rasterAttributeTable?token=${o}&f=pjson`),
-			r = await t;
-		return await r.json();
-	},
-	g = async (e, o, t, r) => {
-		(console.log(t), console.log(r));
-		try {
-			const e = await r.identify(t);
-			return (console.log(e), e);
-		} catch (e) {
-			console.log(e);
-		}
-	},
-	f = ({ eluAttributes: e, selectedLandform: o, explorerLookupTable: t }) => {
-		const r = o || e[0]?.attributes.LandFrmCls;
-		return t.features.filter((e) => e.attributes.LandFrmCls === r);
-	},
-	m = ({ eluAttributes: e, selectedLandCover: o, explorerLookupTable: t }) => {
-		const r = o || e[0]?.attributes?.LandCovCls;
-		return t.features.filter((e) => e.attributes.LandCovCls === r);
-	},
-	v = ({
-		eluAttributes: e,
-		selectedClimateRegion: o,
-		explorerLookupTable: t,
-	}) => {
-		const r = o || e[0]?.attributes.BioClimCls;
-		return t.features.filter((e) => e.attributes.BioClimCls === r);
-	},
-	h = (e, o) => {
-		(console.log(e), console.log(o));
-		const t = o.features.find((o) => {
-			if (o.attributes.Value == e) return o;
-		});
-		console.log(t);
-		const r = o.features.filter((e) => {
-			if (
-				e.attributes.BioClimCls === t.attributes.BioClimCls &&
-				e.attributes.LandCovCls === t.attributes.LandCovCls &&
-				e.attributes.LandFrmCls === t.attributes.LandFrmCls
-			)
-				return (console.log('all three'), e);
-		});
-		return (console.log('all the WTE', r), r);
-	},
-	b = (e, o) => {
-		console.log(e);
-		const t = o.features.filter((o) => {
-			if (
-				o.attributes.LandFrmCls == e[0] &&
-				o.attributes.LandCovCls == e[1] &&
-				o.attributes.BioClimCls == e[2]
-			)
-				return o;
-		});
-		return (console.log(t), t);
-	},
-	C = async ({ pixelInfo: e, eluData: o }) => {
-		try {
-			(console.log('the ELU', o),
-				console.log('the Pixel', e),
-				console.log('the Pixel length', e?.length),
-				console.log('the Pixel', !0 === e));
-			const [t] = await $arcgis.import([
-				'@arcgis/core/layers/support/rasterFunctionUtils.js',
-			]);
-			if (e?.length > 0) {
-				const o = e.map((e) => [
-					e.attributes.Value,
-					e.attributes.Red,
-					e.attributes.Green,
-					e.attributes.Blue,
-				]);
-				console.log('colorMaps for all occurrences of the pixels string', o);
-				return t.colormap({ colormap: o });
-			}
-			if (o) {
-				const e = o.map((e) => [
-					e.attributes.Value,
-					e.attributes.Red,
-					e.attributes.Green,
-					e.attributes.Blue,
-				]);
-				console.log('colorMaps for all occurrences of the ELU string', e);
-				return t.colormap({ colormap: e });
-			}
-			if (0 == e || 0 == o) {
-				console.log('the false pixel value');
-				return t.remap({
-					rangeMaps: [{ range: [0, 0], output: 0, allowUnmatched: !1 }],
-				});
-			}
-		} catch (e) {
-			console.log('issue encountered during colormap construction', e);
-		}
-	},
-	w = async ({
-		config: e,
-		mapPoint: o,
-		mainExplorerContainer: t,
-		eluAttributes: r,
-		pixelValue: l,
-		showInvalidNotificationDiv: s,
-		DOM_id_class_variables: a,
-		createNewCrosshairGraphic: i,
-	}) => {
-		try {
-			let n;
-			const c = t.view;
-			(console.log(c),
-				c.map.layers.items[0].layers.items.find((o) => {
-					o.portalItem.id !== e.dependencies__exploreLayer.itemId || (n = o);
-				}));
-			const p = l || r,
-				u = await C({ pixelInfo: p });
-			if (((n.renderer = null), (n.rasterFunction = u), 0 == p)) {
-				const e = !0;
-				(s({ DOM_id_class_variables: a }),
-					i({ explorerMainMapView: c, noPixelInfo: e }));
-			}
-			i({ mapPoint: o, explorerMainMapView: c });
-		} catch (e) {
-			console.log(
-				'error adding the rasterFunction to the main explorer view component',
-				e,
-			);
-		}
+import landformsJSON from '../landform.json' with { type: 'json' };
+import landCoverJSON from '../landCover.json' with { type: 'json' };
+import climateRegionJSON from '../climateRegion.json' with { type: 'json' };
+import WTE_statistics from '../WTE_statistics.json' with { type: 'json' };
+
+let controller = new AbortController();
+
+const arrayOfJSONs = [climateRegionJSON, landCoverJSON, landformsJSON];
+
+const array_Of_JSON_ELUs = ({ arrayOfJSONs }) => {
+	//expects an array of JSONs, that will be processed
+	const arrayOfTitlesAndFeatures = arrayOfJSONs.map((json) => {
+		return buildTitleAndFeatureNamesArray(json);
+	});
+
+	return arrayOfTitlesAndFeatures;
+};
+
+const buildTitleAndFeatureNamesArray = (object) => {
+	//takes a JSON and creates a new object containing the JSON's 'title' and the 'elu' values in the 'items' properties.
+	//JSON files must have 'title' and 'items' properties.
+	//Based on a conversion with Charlie Frye, it was recommended that we use the simplified 'elu' values in place of the 'ef'
+
+	const arrayOfAllELUs = object.items.map((entry) => {
+		const featureCategory = {
+			id: entry.id,
+			wte: entry.wte,
+			tooltip: entry.tooltip,
+		};
+		return featureCategory;
+	});
+
+	const uniqueELUsArray = {
+		title: object.title,
+		elementID: object.elementID,
+		tooltip: object.tooltip,
+		features: [...new Set(arrayOfAllELUs)],
 	};
+	return uniqueELUsArray;
+};
+
+const ELU_FeatureStrings = array_Of_JSON_ELUs({ arrayOfJSONs });
+//is this a good name? It might be misleading.
+const mapClickEventDelegation = ({
+	event,
+	config,
+	sessionToken,
+	DOM_id_class_variables,
+	explorerLookupTable,
+	showInvalidNotificationDiv,
+	createNewCrosshairGraphic,
+	getString,
+}) => {
+	console.log(getString);
+	if (
+		event.target?.closest(
+			`#${DOM_id_class_variables['projection_containerDiv']}`,
+		)
+	) {
+		return;
+	}
+	if (event.target?.closest(`.${DOM_id_class_variables['dropDownClass']}`)) {
+		updateMapPixelsFromDropdown({
+			event,
+			config,
+			sessionToken,
+			explorerLookupTable,
+			DOM_id_class_variables,
+			showInvalidNotificationDiv,
+			createNewCrosshairGraphic,
+			getString,
+		});
+		return;
+	}
+	if (
+		event.target?.closest(`#${DOM_id_class_variables['explorer_containerDiv']}`)
+	) {
+		exploreMaps_SelectionProcess({
+			event,
+			config,
+			sessionToken,
+			DOM_id_class_variables,
+			explorerLookupTable,
+			showInvalidNotificationDiv,
+			createNewCrosshairGraphic,
+			getString,
+		});
+		return;
+	}
+};
+
+//not a good function name. This uses a conditional to find out which dropdown has been select. what choice in that dropdown has been selected and will then proceed to initiate the render process for the associated map and the main map.
+const updateMapPixelsFromDropdown = ({
+	event,
+	config,
+	sessionToken,
+	explorerLookupTable,
+	DOM_id_class_variables,
+	showInvalidNotificationDiv,
+	createNewCrosshairGraphic,
+	getString,
+}) => {
+	const explorerModeContainer = event.target?.closest(
+		`#${DOM_id_class_variables['explorer_containerDiv']}`,
+	);
+	const mainExplorerContainer = explorerModeContainer.querySelector(
+		`#${DOM_id_class_variables['explorer_ecosystems']}`,
+	);
+	const dropDowns = explorerModeContainer.querySelectorAll(
+		`.${DOM_id_class_variables['dropDownDisplayClass']}`,
+	);
+	const dropdownELUs = [];
+	const miniMapELUs = {};
+
+	dropDowns.forEach((element) => {
+		const selection = element.innerHTML;
+		console.log(element);
+		const selectedValue = element.attributes.value.value;
+		const category = element.closest('arcgis-map').id;
+
+		// return selection;
+		dropdownELUs.push(selectedValue);
+		miniMapELUs[`${category}`] = selectedValue;
+	});
+
+	const pixelValue = getPixelValueFromDropDown(
+		miniMapELUs,
+		explorerLookupTable,
+	);
+
+	if (event.target.closest(`#${landformsJSON['elementID']}`)) {
+		const landformViewContainer = event.target.closest(
+			`#${landformsJSON['elementID']}`,
+		);
+
+		console.log(
+			'the value of the dropdown selection',
+			event.target.attributes['data-id'].value,
+		);
+		console.log(event.target.attributes);
+		const selectedLandFormID = event.target.attributes['data-id'].value;
+		const selectedLandform = event.target.attributes.value.value;
+		const allLandformPixels = getLandformELUs({
+			selectedLandform,
+			explorerLookupTable,
+		});
+
+		updateLandformPixelSelection(
+			landformViewContainer,
+			config,
+			allLandformPixels,
+			DOM_id_class_variables,
+			getString,
+		);
+	}
+
+	if (event.target.closest(`#${landCoverJSON['elementID']}`)) {
+		const landCoverViewContainer = event.target.closest(
+			`#${landCoverJSON['elementID']}`,
+		);
+
+		const selectedLandCover = event.target.attributes.value.value;
+
+		const allLandCoverPixels = getLandCoverELUs({
+			selectedLandCover,
+			explorerLookupTable,
+		});
+
+		updateLandCoverPixelSelection(
+			landCoverViewContainer,
+			config,
+			allLandCoverPixels,
+			DOM_id_class_variables,
+			getString,
+		);
+	}
+
+	if (event.target.closest(`#${climateRegionJSON['elementID']}`)) {
+		const climateRegionViewContainer = event.target.closest(
+			`#${climateRegionJSON['elementID']}`,
+		);
+
+		const selectedClimateRegion = event.target.attributes.value.value;
+
+		const allClimateRegionPixels = getClimateRegionELUs({
+			selectedClimateRegion,
+			explorerLookupTable,
+		});
+
+		updateClimateRegionPixelSelection(
+			climateRegionViewContainer,
+			config,
+			allClimateRegionPixels,
+			DOM_id_class_variables,
+			getString,
+		);
+	}
+
+	explorer_mainView_pixelSelection({
+		config,
+		// sessionToken,
+		mainExplorerContainer,
+		pixelValue,
+		// event,
+		// ELU__url,
+		showInvalidNotificationDiv,
+		DOM_id_class_variables,
+		createNewCrosshairGraphic,
+	});
+};
+
+const exploreMaps_SelectionProcess = async ({
+	event,
+	config,
+	sessionToken,
+	DOM_id_class_variables,
+	explorerLookupTable,
+	showInvalidNotificationDiv,
+	createNewCrosshairGraphic,
+	previousMapPoint,
+	mapViewElement,
+	getString,
+}) => {
+	console.log('DOING A MAP THING');
+	try {
+		const explorerViewsContainer =
+			event?.target.closest('#explore') || mapViewElement.closest('#explore');
+
+		const mainExplorerContainer = explorerViewsContainer.querySelector(
+			`#${DOM_id_class_variables['explorer_ecosystems']}`,
+		);
+		const explorerMainMapView = mainExplorerContainer.view;
+		const explorerMainMap = event?.target.map || explorerMainMapView.map;
+		const landformViewContainer = explorerViewsContainer.querySelector(
+			`#${landformsJSON['elementID']}`,
+		);
+		const landCoverViewContainer = explorerViewsContainer.querySelector(
+			`#${landCoverJSON['elementID']}`,
+		);
+		const climateRegionViewContainer = explorerViewsContainer.querySelector(
+			`#${climateRegionJSON['elementID']}`,
+		);
+		const ELU__url = config.dependencies__exploreLayer.url;
+
+		const mapPoint =
+			previousMapPoint || event?.detail.mapPoint.clone().normalize();
+		const wteLayer = explorerMainMap.layers.items[0].layers.items.find(
+			(layer) => {
+				if (layer.portalItem.id === config.dependencies__exploreLayer.itemId) {
+					return layer;
+				}
+			},
+		);
+
+		const mainExplorerViewPixel = await identifyMainExplorerViewPixel(
+			ELU__url,
+			sessionToken,
+			mapPoint,
+			wteLayer,
+		);
+
+		if (mainExplorerViewPixel.value == null) {
+			showInvalidNotificationDiv({ DOM_id_class_variables });
+			return;
+		}
+
+		const pixelValue = mainExplorerViewPixel.value[0];
+
+		const eluAttributes = pixelValueAsWTEs(pixelValue, explorerLookupTable);
+		console.log('the map selection ELUs', eluAttributes);
+		const allLandformPixels = getLandformELUs({
+			eluAttributes,
+			explorerLookupTable,
+		});
+
+		const allLandCoverPixelValues = getLandCoverELUs({
+			eluAttributes,
+			explorerLookupTable,
+		});
+
+		const allClimateRegionPixelValues = getClimateRegionELUs({
+			eluAttributes,
+			explorerLookupTable,
+		});
+
+		if (
+			event?.target.id === DOM_id_class_variables['explorer_ecosystems'] ||
+			previousMapPoint
+		) {
+			console.log(previousMapPoint, 'IS TRUE');
+
+			explorer_mainView_pixelSelection({
+				config,
+				mapPoint,
+				// sessionToken,
+				mainExplorerContainer,
+				eluAttributes,
+				event,
+				// ELU__url,
+				showInvalidNotificationDiv,
+				createNewCrosshairGraphic,
+			});
+
+			updateLandformPixelSelection(
+				landformViewContainer,
+				config,
+				allLandformPixels,
+				DOM_id_class_variables,
+				getString,
+			);
+			updateLandCoverPixelSelection(
+				landCoverViewContainer,
+				config,
+				allLandCoverPixelValues,
+				DOM_id_class_variables,
+				getString,
+			);
+			updateClimateRegionPixelSelection(
+				climateRegionViewContainer,
+				config,
+				allClimateRegionPixelValues,
+				DOM_id_class_variables,
+				getString,
+			);
+		}
+
+		if (event?.target.id === landformsJSON['elementID']) {
+			try {
+				await updateLandformPixelSelection(
+					landformViewContainer,
+					config,
+					allLandformPixels,
+					DOM_id_class_variables,
+					getString,
+				);
+				updateMapPixelsFromMiniMap({
+					event,
+					config,
+					explorerLookupTable,
+					DOM_id_class_variables,
+					showInvalidNotificationDiv,
+					createNewCrosshairGraphic,
+					getString,
+				});
+			} catch (error) {
+				console.log(
+					'error updating raster functions for the landform pixels before updating main map',
+					error,
+				);
+			}
+		}
+
+		if (event?.target.id === landCoverJSON['elementID']) {
+			try {
+				await updateLandCoverPixelSelection(
+					landCoverViewContainer,
+					config,
+					allLandCoverPixelValues,
+					DOM_id_class_variables,
+					getString,
+				);
+
+				updateMapPixelsFromMiniMap({
+					event,
+					config,
+					explorerLookupTable,
+					DOM_id_class_variables,
+					showInvalidNotificationDiv,
+					createNewCrosshairGraphic,
+					getString,
+				});
+			} catch (error) {
+				console.log(
+					'error updating raster functions for the land cover pixels before updating main map',
+					error,
+				);
+			}
+		}
+
+		if (event?.target.id === climateRegionJSON['elementID']) {
+			try {
+				await updateClimateRegionPixelSelection(
+					climateRegionViewContainer,
+					config,
+					allClimateRegionPixelValues,
+					DOM_id_class_variables,
+					getString,
+				);
+
+				updateMapPixelsFromMiniMap({
+					event,
+					config,
+					explorerLookupTable,
+					DOM_id_class_variables,
+					showInvalidNotificationDiv,
+					createNewCrosshairGraphic,
+					getString,
+				});
+			} catch (error) {
+				console.log(
+					'error updating raster functions for the climate region pixels before updating main map',
+					error,
+				);
+			}
+			// updateMainViewFromMiniMapProcess(event,config, explorerLookupTable)
+		}
+	} catch (error) {
+		console.log(
+			'Encountered error processing the click event for updating the render functions of one of the explorer-oriented maps',
+			error,
+		);
+	}
+};
+
+const updateMapPixelsFromMiniMap = ({
+	event,
+	config,
+	explorerLookupTable,
+	DOM_id_class_variables,
+	showInvalidNotificationDiv,
+	createNewCrosshairGraphic,
+	getString,
+}) => {
+	console.log('UPDATING MAIN PIXEL');
+	const mapPoint = event.detail.mapPoint.clone().normalize();
+	const explorerModeContainer = event.target?.closest(
+		`#${DOM_id_class_variables['explorer_containerDiv']}`,
+	);
+
+	const mainExplorerContainer = explorerModeContainer.querySelector(
+		`#${DOM_id_class_variables['explorer_ecosystems']}`,
+	);
+	//This is where the error occurs?
+	const dropDowns = explorerModeContainer.querySelectorAll(
+		`.${DOM_id_class_variables['dropDownDisplayClass']}`,
+	);
+	const dropdownELUs = [];
+	const miniMapELUs = {};
+
+	dropDowns.forEach((element) => {
+		console.log('the dropdown value', element.innerHTML);
+		const selection = element.attributes.value.value;
+		const category = element.closest('arcgis-map').id;
+
+		console.log(category);
+		dropdownELUs.push(selection);
+		miniMapELUs[`${category}`] = selection;
+	});
+
+	// console.log(dropdownELUs);
+	console.log(miniMapELUs);
+	const pixelValue = getPixelValueFromDropDown(
+		miniMapELUs,
+		explorerLookupTable,
+	);
+
+	explorer_mainView_pixelSelection({
+		config,
+		mapPoint,
+		// sessionToken,
+		mainExplorerContainer,
+		pixelValue,
+		// event,
+		// ELU__url,
+		showInvalidNotificationDiv,
+		DOM_id_class_variables,
+		createNewCrosshairGraphic,
+	});
+};
+
+const updateLandformPixelSelection = async (
+	landformViewContainer,
+	config,
+	allLandformPixels,
+	DOM_id_class_variables,
+	getString,
+) => {
+	try {
+		let highlightLayer;
+		console.log(landformViewContainer);
+		const dropdownSelection = landformViewContainer.querySelector(
+			`.${DOM_id_class_variables['dropDownDisplayClass']}`,
+		);
+
+		const selectedTooltip =
+			landformViewContainer.querySelector(`.selected-tooltip`);
+
+		const eluData = allLandformPixels;
+		console.log(eluData[0].attributes.LandFrmCls);
+
+		const newRasterFunction = await createColorMap({ eluData });
+
+		landformViewContainer.view.map.layers.items[0].layers.items.find(
+			(layer) => {
+				if (layer.title === config.dependencies__exploreLayer.title) {
+					highlightLayer = layer;
+					layer.renderer = null;
+					layer.rasterFunction = newRasterFunction;
+
+					return;
+				}
+			},
+		);
+
+		const featureEntry = landformsJSON.items.find((featureEntry) => {
+			return featureEntry.wte == eluData[0].attributes.LandFrmCls.trim();
+		});
+
+		const tooltipDiv = document.createElement('div');
+
+		const tooltipHTML = ` 
+    <calcite-icon id="${featureEntry.wte}-tooltip" icon="information" scale="s"></calcite-icon>
+		   <calcite-tooltip reference-element="${featureEntry.wte}-tooltip">
+		     <span>${getString(featureEntry['wte'].trim() + '__tooltip')}</span>
+		   </calcite-tooltip>
+		   `;
+		tooltipDiv.innerHTML = tooltipHTML;
+		selectedTooltip.firstElementChild?.remove();
+		selectedTooltip.append(tooltipDiv);
+
+		dropdownSelection.innerHTML = getString(featureEntry.wte);
+		dropdownSelection.setAttribute('value', featureEntry.wte);
+
+		// landformViewContainer.view.map.layers.items[0].layers.items.find(
+		// 	(layer) => {
+		// 		if (layer.title === config.dependencies__exploreLayer.title) {
+		// 			highlightLayer = layer;
+		// 			return;
+		// 		}
+		// 	},
+		// );
+
+		dropdownSelection.innerHTML = eluData[0].attributes.LandFrmCls;
+		// dropdownSelection.classList.remove(
+		// 	DOM_id_class_variables['dropDownPlaceHolderClass'],
+		// );
+
+		// highlightLayer.renderer = null;
+		// highlightLayer.rasterFunction = newRasterFunction;
+	} catch (error) {
+		console.log('error updating landform raster function', error);
+	}
+};
+
+const updateLandCoverPixelSelection = async (
+	landCoverViewContainer,
+	config,
+	allLandCoverPixelValues,
+	DOM_id_class_variables,
+	getString,
+) => {
+	try {
+		let highlightLayer;
+		const dropdownSelection = landCoverViewContainer.querySelector(
+			`.${DOM_id_class_variables['dropDownDisplayClass']}`,
+		);
+
+		const selectedTooltip =
+			landCoverViewContainer.querySelector(`.selected-tooltip`);
+
+		const eluData = allLandCoverPixelValues;
+
+		const newRasterFunction = await createColorMap({ eluData });
+
+		landCoverViewContainer.view.map.layers.items[0].layers.items.find(
+			(layer) => {
+				if (layer.title === config.dependencies__exploreLayer.title) {
+					highlightLayer = layer;
+					layer.renderer = null;
+					layer.rasterFunction = newRasterFunction;
+
+					return;
+				}
+			},
+		);
+
+		const featureEntry = landCoverJSON.items.find((featureEntry) => {
+			return featureEntry.wte == eluData[0].attributes.LandCovCls.trim();
+		});
+
+		console.log(eluData);
+		console.log(featureEntry);
+		const tooltipDiv = document.createElement('div');
+
+		const tooltipHTML = ` 
+    <calcite-icon id="${featureEntry.wte}-tooltip" icon="information" scale="s"></calcite-icon>
+		   <calcite-tooltip reference-element="${featureEntry.wte}-tooltip">
+		     <span>${getString(featureEntry['wte'].trim() + '__tooltip')}</span>
+		   </calcite-tooltip>
+		   `;
+		tooltipDiv.innerHTML = tooltipHTML;
+		selectedTooltip.firstElementChild?.remove();
+		selectedTooltip.append(tooltipDiv);
+
+		dropdownSelection.innerHTML = getString(featureEntry.wte);
+		dropdownSelection.setAttribute('value', featureEntry.wte);
+	} catch (error) {
+		console.log('error updating land cover raster function', error);
+	}
+};
+
+const updateClimateRegionPixelSelection = async (
+	climateRegionViewContainer,
+	config,
+	allClimateRegionPixelValues,
+	DOM_id_class_variables,
+	getString,
+) => {
+	try {
+		let highlightLayer;
+		const dropdownSelection = climateRegionViewContainer.querySelector(
+			`.${DOM_id_class_variables['dropDownDisplayClass']}`,
+		);
+
+		const selectedTooltip =
+			climateRegionViewContainer.querySelector(`.selected-tooltip`);
+
+		const eluData = allClimateRegionPixelValues;
+
+		const newRasterFunction = await createColorMap({ eluData });
+
+		climateRegionViewContainer.view.map.layers.items[0].layers.items.find(
+			(layer) => {
+				if (layer.title === config.dependencies__exploreLayer.title) {
+					highlightLayer = layer;
+					layer.renderer = null;
+					layer.rasterFunction = newRasterFunction;
+
+					return;
+				}
+			},
+		);
+
+		const featureEntry = climateRegionJSON.items.find((featureEntry) => {
+			return featureEntry.wte == eluData[0].attributes.BioClimCls.trim();
+		});
+
+		const tooltipDiv = document.createElement('div');
+
+		const tooltipHTML = ` 
+    <calcite-icon id="${featureEntry.wte}-tooltip" icon="information" scale="s"></calcite-icon>
+		   <calcite-tooltip reference-element="${featureEntry.wte}-tooltip">
+		     <span>${getString(featureEntry['wte'].trim() + '__tooltip')}</span>
+		   </calcite-tooltip>
+		   `;
+		tooltipDiv.innerHTML = tooltipHTML;
+		selectedTooltip.firstElementChild?.remove();
+		selectedTooltip.append(tooltipDiv);
+
+		dropdownSelection.innerHTML = getString(featureEntry.wte);
+		dropdownSelection.setAttribute('value', featureEntry.wte);
+
+		// climateRegionViewContainer.view.map.layers.items[0].layers.items.find(
+		// 	(layer) => {
+		// 		if (layer.title === config.dependencies__exploreLayer.title) {
+		// 			highlightLayer = layer;
+		// 			return;
+		// 		}
+		// 	},
+		// );
+		// dropdownSelection.classList.remove(
+		// 	DOM_id_class_variables['dropDownPlaceHolderClass'],
+		// );
+
+		// highlightLayer.renderer = null;
+		// highlightLayer.rasterFunction = newRasterFunction;
+	} catch (error) {
+		console.log('error updating climate region raster function', error);
+	}
+};
+
+const getAttributeTable = async (url, token) => {
+	//TOKEN ISSUE? USE PROXY APP?
+	const fetchAttributeTable = fetch(
+		`${url}/rasterAttributeTable?token=${token}&f=pjson`,
+	);
+	const attributeTableReturn = await fetchAttributeTable;
+	const attributeTable = await attributeTableReturn.json();
+
+	return attributeTable;
+};
+
+const identifyMainExplorerViewPixel = async (
+	url,
+	sessionToken,
+	mapPoint,
+	wteLayer,
+) => {
+	try {
+		const mapPointIdentify = await wteLayer.identify(mapPoint);
+
+		return mapPointIdentify;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+const getLandformELUs = ({
+	eluAttributes,
+	selectedLandform,
+	explorerLookupTable,
+}) => {
+	const landFormELU_string =
+		selectedLandform || eluAttributes[0]?.attributes.LandFrmCls;
+	// selectedLandform || eluAttributes[0]?.attributes.ELU_LF_Des;
+
+	const array_LandformStringPixelsData = explorerLookupTable.features.filter(
+		(feature) => feature.attributes.LandFrmCls === landFormELU_string,
+	);
+
+	return array_LandformStringPixelsData;
+};
+
+const getLandCoverELUs = ({
+	eluAttributes,
+	selectedLandCover,
+	explorerLookupTable,
+}) => {
+	const landCoverELU_string =
+		selectedLandCover || eluAttributes[0]?.attributes?.LandCovCls;
+
+	const array_LandCoverStringPixelsData = explorerLookupTable.features.filter(
+		(feature) => feature.attributes.LandCovCls === landCoverELU_string,
+	);
+
+	return array_LandCoverStringPixelsData;
+};
+
+const getClimateRegionELUs = ({
+	eluAttributes,
+	selectedClimateRegion,
+	explorerLookupTable,
+}) => {
+	const climateRegionELU_string =
+		selectedClimateRegion || eluAttributes[0]?.attributes.BioClimCls;
+
+	const array_climateRegionStringPixelsData =
+		explorerLookupTable.features.filter(
+			(feature) => feature.attributes.BioClimCls === climateRegionELU_string,
+		);
+
+	return array_climateRegionStringPixelsData;
+};
+
+const pixelValueAsWTEs = (pixelValue, explorerLookupTable) => {
+	const wteAttributes = explorerLookupTable.features.find(
+		(tableFeatureEntry) => {
+			if (tableFeatureEntry.attributes.Value == pixelValue) {
+				return tableFeatureEntry;
+			}
+		},
+	);
+
+	const allWTEs = explorerLookupTable.features.filter((feature) => {
+		if (
+			feature.attributes.BioClimCls === wteAttributes.attributes.BioClimCls &&
+			feature.attributes.LandCovCls === wteAttributes.attributes.LandCovCls &&
+			feature.attributes.LandFrmCls === wteAttributes.attributes.LandFrmCls
+		) {
+			return feature;
+		}
+	});
+
+	return allWTEs;
+};
+
+const getPixelValueFromDropDown = (dropdownELUs, explorerLookupTable) => {
+	const ELU_pixelValue = explorerLookupTable.features.filter((feature) => {
+		//this is not a smart implementation. If this array changes order at all, this will break.
+		if (
+			feature.attributes.LandFrmCls == dropdownELUs.landform &&
+			feature.attributes.LandCovCls == dropdownELUs.landCover &&
+			feature.attributes.BioClimCls == dropdownELUs.climateRegion
+		) {
+			return feature;
+		}
+	});
+
+	return ELU_pixelValue;
+};
+
+const createColorMap = async ({ pixelInfo, eluData }) => {
+	try {
+		const [RasterFunctionUtils] = await $arcgis.import([
+			'@arcgis/core/layers/support/rasterFunctionUtils.js',
+		]);
+
+		//even if this is a blank array it's still triggering this condition.
+		if (pixelInfo?.length > 0) {
+			const eluColorMaps = pixelInfo.map((features) => {
+				return [
+					features.attributes.Value,
+					features.attributes.Red,
+					features.attributes.Green,
+					features.attributes.Blue,
+				];
+			});
+
+			const colormap = RasterFunctionUtils.colormap({
+				//this doesn't address if there are multiple value
+				colormap: eluColorMaps,
+			});
+
+			return colormap;
+		}
+
+		if (eluData) {
+			const eluColorMaps = eluData.map((features) => {
+				return [
+					features.attributes.Value,
+					features.attributes.Red,
+					features.attributes.Green,
+					features.attributes.Blue,
+				];
+			});
+
+			const colormap = RasterFunctionUtils.colormap({
+				//this doesn't address if there are multiple value
+				colormap: eluColorMaps,
+			});
+
+			return colormap;
+		}
+
+		if (pixelInfo == false || eluData == false) {
+			const noResultRasterFunction = RasterFunctionUtils.remap({
+				rangeMaps: [{ range: [0, 0], output: 0, allowUnmatched: false }],
+			});
+
+			return noResultRasterFunction;
+		}
+	} catch (error) {
+		console.log('issue encountered during colormap construction', error);
+	}
+};
+const explorer_mainView_pixelSelection = async ({
+	config,
+	mapPoint,
+	// sessionToken,
+	mainExplorerContainer,
+	eluAttributes,
+	pixelValue,
+	// event,
+	// ELU__url,
+	showInvalidNotificationDiv,
+	DOM_id_class_variables,
+	createNewCrosshairGraphic,
+}) => {
+	try {
+		let previousPixelLayer;
+
+		const explorerMainMapView = mainExplorerContainer.view;
+
+		explorerMainMapView.map.layers.items[0].layers.items.find((layer) => {
+			if (layer.portalItem.id === config.dependencies__exploreLayer.itemId) {
+				previousPixelLayer = layer;
+				return;
+			}
+		});
+
+		const pixelInfo = pixelValue || eluAttributes;
+
+		const colormap = await createColorMap({
+			pixelInfo,
+		});
+
+		previousPixelLayer.renderer = null;
+		previousPixelLayer.rasterFunction = colormap;
+
+		if (pixelInfo == false) {
+			const noPixelInfo = true;
+			showInvalidNotificationDiv({ DOM_id_class_variables });
+			createNewCrosshairGraphic({
+				explorerMainMapView,
+				noPixelInfo,
+			});
+		}
+		createNewCrosshairGraphic({ mapPoint, explorerMainMapView });
+	} catch (error) {
+		console.log(
+			'error adding the rasterFunction to the main explorer view component',
+			error,
+		);
+	}
+};
+
+const projectionStatistics = (mode, filter, statisticsElement, getString) => {
+	console.log(getString);
+	console.log(mode, filter);
+	const statArea = WTE_statistics[`${mode}__${filter}__area`];
+	const statAreaPercent = WTE_statistics[`${mode}__${filter}__percent`];
+	const statAreaPopulation = WTE_statistics[`${mode}__${filter}__population`];
+	const statWorldPopulationPercent =
+		WTE_statistics[`${mode}__${filter}__populationPercent`];
+
+	const statisticValues = {
+		statArea: statArea,
+		statAreaPercent: statAreaPercent,
+		statAreaPopulation: statAreaPopulation,
+		statWorldPopulationPercent: statWorldPopulationPercent,
+	};
+
+	const dataString = getString('statisticsFooter', statisticValues);
+	console.log(dataString);
+	const statisticsDataString = getString('statisticsFooter', statisticValues);
+	// const statisticsDataString = `<div><span>${statArea}km<sup>2</sup> (${statAreaPercent} of Earth's land area)</span><wbr>|<span>${statWorldPopulationPercent} of Earth's population (population: ${statAreaPopulation})</span></div>`;
+	// const statisticsDataStringMobileFormat = `<div><span>${statArea}km<sup>2</sup></span></div> <div><span>(${statAreaPercent} of Earth's land area)</span></div> <div></div><span>${statWorldPopulationPercent} of Earth's population (population: ${statAreaPopulation})</span></div>`;
+	// `<span>${statArea}km<sup>2</sup></span> | <span>${statAreaPercent} of Earth's land area</span> | <span>${statWorldPopulationPercent} of Earth's population (population: ${statAreaPopulation})</span>`;
+
+	// statisticsElement.innerHTML = statisticsDataStringMobileFormat;
+	statisticsElement.innerHTML = statisticsDataString;
+};
+
 export {
-	l as ELU_FeatureStrings,
-	d as getAttributeTable,
-	s as mapClickEventDelegation,
-	i as exploreMaps_SelectionProcess,
+	ELU_FeatureStrings,
+	getAttributeTable,
+	mapClickEventDelegation,
+	exploreMaps_SelectionProcess,
+	projectionStatistics,
 };
