@@ -66,9 +66,7 @@ const initApp = async () => {
 		const userPortalData = await authorization(config);
 		const sessionToken = await get_DEV_token(config);
 		const hashParams = parseAndFormatURL();
-		console.log('from main', hashParams);
 
-		console.log('the features', ELU_FeatureStrings);
 		const wte_categories = ELU_FeatureStrings;
 		const explorerLookupTable = await getAttributeTable(
 			config.dependencies__exploreLayer.url,
