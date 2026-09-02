@@ -27,7 +27,7 @@ const setHTMLLang = (preferredLanguage) => {
 const fetchStrings = async (language) => {
 	try {
 		const fetchLanguageObject = await fetch(
-			`./language/${language}/strings.JSON`,
+			`./language/${language}/strings.json`,
 		);
 
 		if (fetchLanguageObject.status === 200) {
