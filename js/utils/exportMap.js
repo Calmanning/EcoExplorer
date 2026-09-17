@@ -130,7 +130,6 @@ const createBtn = (string, classString) => {
 	return btn;
 };
 const getMapViewForExport = (mapViews, mapMode) => {
-	// const params = parseAndFormatURL();
 	console.log(mapMode);
 	const exportMap =
 		mapMode === 'explore' || mapMode === ''
@@ -145,38 +144,164 @@ const createBaseMapLayersDefinitions = (basemapDetails, config) => {
 	console.log(basemapDetails);
 	const basemapLayers = [];
 
-	const parseAndAddBasemapLayer = (layerItem) => {
-		console.log(layerItem);
-		// layerItem.layerDefinition.drawingInfo.effect = layerItem?.effect || '';
-		// const layerDetailDefinition = {
-		// 	id: layerItem.id,
-		// 	type: layerItem.type,
-		// 	layerType: layerItem.operationalLayerType,
-		// 	title: layerItem.title,
-		// 	styleUrl: layerItem?.styleUrl || '',
-		// 	itemId: layerItem.portalItem.id,
-		// 	visible: layerItem.visible,
-		// 	opacity: layerItem.opacity,
-		// 	blendMode: layerItem.blendMode,
-		// 	effect: layerItem?.effect || '',
-		// };
+	const parseAndAddBasemapLayer = (layer) => {
+		const layerDetailDefinition = {
+			id: layer.id,
+			type: layer.type,
+			layerType: layer.operationalLayerType,
+			title: layer.title,
+			styleUrl: layer?.styleUrl || '',
+			itemId: layer.portalItem.id,
+			visible: layer.visible,
+			opacity: layer.opacity,
+			blendMode: layer.blendMode,
+			effect: getBasemapLayerEffect({ layer, config }),
+			isReference: layer?.isReference,
+		};
 
-		// console.log('details of the basemap layer', layerDetailDefinition);
-		basemapLayers.push(layerItem);
+		basemapLayers.push(layerDetailDefinition);
 	};
 
-	const layerTypeLookUp = {
-		vectorTile: 'VectorTileLayer',
-	};
-
-	//this only sets up the first layer of the baselayers. What happens when you have three?
 	basemapDetails.baseLayers.items.map((basemapLayer) => {
 		parseAndAddBasemapLayer(basemapLayer);
 	});
 
-	// parseAndAddBasemapLayer(basemapDetails.referenceLayers.items[0], true);
-	console.log('array of basemaps for export', basemapLayers);
 	return basemapLayers;
+};
+
+const createOperationalLayersForExport = ({ operationalLayers, config }) => {
+	//IS THIS NAMING CONVENTION AND SITUATION A BAD IDEA?
+	const arrayOfTargetLayers = operationalLayers;
+	const operationalLayersArray = [];
+
+	const thing = arrayOfTargetLayers.map((layer) => {
+		if (layer.type === 'group') {
+			const operationalLayers = layer.layers.items;
+
+			const groupLayerParameters = {
+				title: layer.title,
+				layerType: 'GroupLayer',
+				effect: getLayerEffect({ layer, config }),
+				layers: createOperationalLayersForExport({ operationalLayers, config }),
+				visibility: layer.visible,
+				minScale: layer.minScale,
+				maxScale: layer.maxScale,
+				visibilityTimeExtent: layer.visibilityTimeExtent,
+			};
+
+			return groupLayerParameters;
+		}
+
+		const newLayerParameters = {
+			title: layer.title,
+			layerType: getLayerType({ layer, config }),
+			itemId: layer.portalItem.id,
+			url: layer.url,
+			blendMode: layer?.blendMode || 'normal',
+			interpolation: getLayerInterpolation({ layer, config }) || '',
+			effect: getLayerEffect({ layer, config }),
+			layerDefinition: {
+				drawingInfo: {
+					renderer: layer?.renderer,
+				},
+			},
+			renderingRule: {
+				rasterFunction: layer?.rasterFunction?.functionName || '',
+				rasterFunctionArguments: layer?.rasterFunction?.functionArguments || '',
+				rasterFunctionDefinition:
+					layer?.rasterFunction?.rasterFunctionDefinition || '',
+			},
+			visibility: layer.visible,
+			opacity: layer.opacity,
+		};
+		return newLayerParameters;
+	});
+
+	return thing;
+};
+
+const getLayerType = ({ layer, config }) => {
+	const targetLayer = layer.portalItem.id;
+	console.log(targetLayer);
+
+	const layerTypeFromConfigFile = config.operationalLayers[0].layers.find(
+		(configOperationalLayer) => {
+			if (targetLayer === configOperationalLayer.itemId) {
+				console.log('positive match');
+				return configOperationalLayer;
+			}
+		},
+	);
+
+	console.log(layerTypeFromConfigFile === undefined);
+	if (layerTypeFromConfigFile !== undefined) {
+		return layerTypeFromConfigFile?.layerType;
+	}
+
+	const projectionLayerFromConfig =
+		config.ecoProjectionLayers__operationalLayers.find(
+			(configProjectionLayer) => {
+				if (targetLayer === configProjectionLayer.itemId) {
+					console.log('positive match');
+					return configProjectionLayer;
+				}
+			},
+		);
+	return projectionLayerFromConfig?.layerType;
+};
+
+const getLayerEffect = ({ layer, config }) => {
+	const targetLayer = layer.title;
+
+	if (layer.type === 'group') {
+		console.log(config.operationalLayers[0].effectForExport);
+		return config.operationalLayers[0].effectForExport;
+	}
+
+	console.log(config);
+	const effectForTargetLayerExport = config.operationalLayers[0].layers.find(
+		(operationalLayerConfig) => {
+			if (layer?.effect === false) {
+				return null;
+			}
+
+			if (targetLayer === operationalLayerConfig.title) {
+				return operationalLayerConfig;
+			}
+		},
+	);
+
+	return effectForTargetLayerExport?.effectForExport;
+};
+const getBasemapLayerEffect = ({ layer, config }) => {
+	const targetLayer = layer.title;
+
+	console.log(config);
+	const effectForTargetLayerExport = config.basemapLayers.find(
+		(operationalLayerConfig) => {
+			if (layer?.effect === false) {
+				return null;
+			}
+
+			if (targetLayer === operationalLayerConfig.title) {
+				return operationalLayerConfig;
+			}
+		},
+	);
+	return effectForTargetLayerExport?.effectForExport;
+};
+
+const getLayerInterpolation = ({ layer }) => {
+	const layerInterpolationString = layer.interpolation;
+
+	const InterpolationLookupTable = {
+		bilinear: 'RSP_BilinearInterpolation',
+		'nearest neighbor': 'RSP_NearestNeighbor',
+		cubic: 'RSP_CubicConvolution',
+		majority: 'RSP_Majority',
+	};
+
+	return InterpolationLookupTable[layerInterpolationString];
 };
 
 const createMapExportDefinition = (config, map, exportUI_HTML) => {
@@ -185,16 +310,25 @@ const createMapExportDefinition = (config, map, exportUI_HTML) => {
 
 	const operationalLayers = map.map.layers;
 	operationalLayers.items.splice(1, 1);
-
-	console.log(exportForm_textFields);
-	exportForm_textFields.forEach((node) => {
-		console.log(node);
-		// console.log(node.innerText);
-		// console.log(node.firstElementChild.innerText);
+	const operationalLayersForExport = createOperationalLayersForExport({
+		operationalLayers,
+		config,
 	});
 
+	// console.log(exportForm_textFields);
+	// exportForm_textFields.forEach((node) => {
+	// 	console.log(node);
+	// 	// console.log(node.innerText);
+	// 	// console.log(node.firstElementChild.innerText);
+	// });
+
 	console.log('all the layers fed into the webmap creation', operationalLayers);
+	console.log(
+		'all the layers fed from the operational creation function',
+		operationalLayersForExport,
+	);
 	console.log(basemapInfo);
+
 	const webmapDefinition = {
 		description: exportForm_textFields[2].value,
 		tags: exportForm_textFields[1].value,
@@ -203,7 +337,8 @@ const createMapExportDefinition = (config, map, exportUI_HTML) => {
 		multipart: false,
 		f: 'json',
 		text: JSON.stringify({
-			operationalLayers: operationalLayers,
+			operationalLayers: operationalLayersForExport,
+			// operationalLayers: config.operationalLayers,
 			baseMap: {
 				baseMapLayers: basemapInfo,
 				// referenceLayers: basemapInfo.referenceLayers,

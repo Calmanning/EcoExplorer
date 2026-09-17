@@ -239,6 +239,14 @@ const initExplorerViewListeners = async ({
 				formatExtentParametersAndUpdateHashParams({ viewComponent });
 			},
 		);
+
+		const doneUpdatingRemoveLoader = reactiveUtils.watch(
+			() => viewComponent['updating'] === false,
+			() => {
+				document.querySelector(`.initAppLoader`)?.remove();
+			},
+			{ once: true },
+		);
 	});
 };
 

@@ -14,7 +14,27 @@
 	</head>
 	<!-- class="calcite-mode-dark" -->
 	<body style="background-color: #141516">
-		<main></main>
+		<main>
+			<div
+				class="initAppLoader"
+				style="
+					width: 100%;
+					height: 100vh;
+					background: #141516;
+					position: relative;
+					top: 0;
+					z-index: 100;
+					--calcite-loader-text-color: #efefef;
+				"
+			>
+				<calcite-loader
+					style="top: 33%"
+					label="getting data..."
+					scale="m"
+					text="LOADING ECO EXPLORER..."
+				></calcite-loader>
+			</div>
+		</main>
 	</body>
 	<link rel="stylesheet" type="text/css" href="css/main.css?v=0.01" />
 	<link rel="stylesheet" type="text/css" href="css/check-in.css?v0.01" />

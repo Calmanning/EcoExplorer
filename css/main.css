@@ -262,6 +262,7 @@ button calcite-icon {
  /* width: 33.33vw; */
  height: 0vh;
  /* box-shadow: -0.5em 1em 2.7em 0em black */
+ display: none;
 }
 
 #climateRegion-dropdown.mobile{

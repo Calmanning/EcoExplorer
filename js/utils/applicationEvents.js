@@ -7,6 +7,31 @@ const setViewMode = (hashParams) => {
 	console.log(hashParams);
 };
 
+const isMobileDevice = () => {
+	//checking for device type. Checking if it's a mobile user.
+	let istouchEnabled;
+	let isMobileDeviceDetected;
+
+	if (navigator.maxTouchPoints > 0) {
+		istouchEnabled = true;
+	}
+
+	if (
+		/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(
+			navigator.userAgent,
+		)
+	) {
+		isMobileDeviceDetected = true;
+	}
+
+	if (istouchEnabled && isMobileDeviceDetected) {
+		return true;
+	}
+
+	//if neither are true than this is not likely a mobile device.
+	return false;
+};
+
 //gonna need a way to access all these classes and ids
 const initAppTopLevelEventListener = (
 	config,
@@ -690,6 +715,7 @@ const toggle_AGOL_Export = ({ DOM_id_class_variables, mapViews }) => {
 };
 
 export {
+	isMobileDevice,
 	setViewMode,
 	changeViewMode,
 	dropdownEvents,
