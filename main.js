@@ -106,7 +106,6 @@ const initApp = async () => {
 			showInvalidNotificationDiv,
 			createNewCrosshairGraphic,
 			getString,
-			isMobileDevice,
 		});
 		console.log(explorerViewComponents);
 

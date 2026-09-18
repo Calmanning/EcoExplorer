@@ -43,6 +43,13 @@ const hiddenClass = 'hidden';
 const mapPopOutClass = 'map-pop-out-icon';
 const selectedBtnClass = 'selected-btn';
 
+// const viewComponentIDs = [
+// 	'view-map',
+// 	'land-cover-view',
+// 	'land-form-view',
+// 	'climate-region-view',
+// ];
+
 //This isn't a good function. It does too much? I builds the 2050 projection view, but it also builds a  lot of the general achetechture for the app. view,
 const buildAppHTML = (
 	config,
@@ -54,6 +61,10 @@ const buildAppHTML = (
 	getString,
 	isMobileDevice,
 ) => {
+	// const popOutMap = popOutMapComponent();
+	// const exportBtnComponent = agolExportBtnIcon();
+	// const exportForm = buildExportUI();
+
 	const dropShadowDiv = document.createElement('div');
 	dropShadowDiv.classList.add(DOM_id_class_variables['viewStyle_shadow']);
 
@@ -61,9 +72,18 @@ const buildAppHTML = (
 
 	document.querySelector('main').append(logo);
 	document.querySelector('main').append(dropShadowDiv);
-
+	// document.querySelector('main').append(exportForm);
 	document.querySelector('main').append(popOutMap);
 	document.querySelector('main').append(exportBtnComponent);
+	// document
+	// 	.querySelector('main')
+	// 	.append(userIconElement(getCredentialsCallback), exportBtnComponent);
+
+	// const searchComponent = document.createElement('arcgis-search');
+	// const searchContainer = document.createElement('div');
+	// searchContainer.id = 'search-container';
+	// searchContainer.append(searchComponent);
+	// document.querySelector('main').append(searchContainer);
 
 	createViewButtonsUI(
 		config,
@@ -73,6 +93,8 @@ const buildAppHTML = (
 		projectionStatistics,
 		getString,
 	);
+
+	// return changeModeView;
 };
 
 //HTML FOR THE APP TITLE AND LOGO
@@ -203,7 +225,7 @@ const buildExplorerModeHTML = (
 };
 
 const initExplorerViewComponents = ({
-	config,
+	config, /////////////
 	DOM_id_class_variables,
 	hashParams,
 	wte_categories,
@@ -214,7 +236,6 @@ const initExplorerViewComponents = ({
 	showInvalidNotificationDiv,
 	createNewCrosshairGraphic,
 	getString,
-	isMobileDevice,
 }) => {
 	const arrayOfExplorerViewComponents = [];
 
@@ -237,7 +258,6 @@ const initExplorerViewComponents = ({
 			showInvalidNotificationDiv,
 			createNewCrosshairGraphic,
 			getString,
-			isMobileDevice,
 		});
 
 		arrayOfExplorerViewComponents.push(supplementalExplorerViewComponent);
@@ -455,7 +475,6 @@ const createSupplementalViewHTMLs = ({
 	showInvalidNotificationDiv,
 	createNewCrosshairGraphic,
 	getString,
-	isMobileDevice,
 }) => {
 	//
 	// console.log(category);

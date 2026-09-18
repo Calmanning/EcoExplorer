@@ -376,6 +376,10 @@ const changeViewMode = (
 		return;
 	}
 
+	const ecosystemExploreView = document.querySelector(
+		`#${DOM_id_class_variables['explorer_containerDiv']}`,
+	);
+
 	const projectionViewContainer = document.querySelector(
 		`#${DOM_id_class_variables['projection_containerDiv']}`,
 	);
@@ -417,6 +421,11 @@ const changeViewMode = (
 			projectionChangeModelButtons.classList.remove(hiddenClass);
 			modeBtnCascadeLabelArrow.classList.remove(hiddenClass);
 
+			//putting 'no display' on the ecosystem explorer
+			ecosystemExploreView.classList.add(
+				DOM_id_class_variables['noDisplayClass'],
+			);
+
 			cascadeLabelForBtn.forEach((hiddenElement) => {
 				hiddenElement.classList.remove(DOM_id_class_variables['hiddenClass']);
 			});
@@ -428,6 +437,12 @@ const changeViewMode = (
 			}
 		} else {
 			projectionViewContainer.classList.add(noDisplayClass);
+
+			//removing the no display from the ecosystem explorer parent div
+			ecosystemExploreView.classList.remove(
+				DOM_id_class_variables['noDisplayClass'],
+			);
+
 			projectionChangeModelButtons.classList.add(hiddenClass);
 			modeBtnCascadeLabelArrow.classList.add(hiddenClass);
 			changeTypeButtons.classList.add(hiddenClass);
