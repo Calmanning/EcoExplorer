@@ -124,6 +124,7 @@ margin: 0 0.5rem;
 }
 #supplemental-explorer-views.mobile {
   visibility: hidden;
+  display: none;
 }
 /* #explore arcgis-map .main-view-overlay {
   width: 100%;
