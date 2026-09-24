@@ -68,7 +68,7 @@ const buildAppHTML = (
 	const dropShadowDiv = document.createElement('div');
 	dropShadowDiv.classList.add(DOM_id_class_variables['viewStyle_shadow']);
 
-	const logo = buildLogoComponent();
+	const logo = buildLogoComponent(getString);
 
 	document.querySelector('main').append(logo);
 	document.querySelector('main').append(dropShadowDiv);
@@ -285,17 +285,62 @@ const createMainView = (idString) => {
 	return mainViewDiv;
 };
 
-const buildLogoComponent = () => {
+const buildLogoComponent = (getString) => {
 	const logoContainer = document.createElement('div');
 
+	//old tooltip for the info icon.
+	//<calcite-tooltip reference-element="logo-tooltip">
+	//<span>Explore current world terrestrial ecosystems. Three smaller map views below show the landform, land cover, and climate contributing to each distinct ecosystem.</span>
+	//</calcite-tooltip></span>
+
+	const appInfoModal = createAppModal(getString);
+
 	const logoHTML = `<span><calcite-icon id='logo-tooltip' icon="information" scale="s"></calcite-icon>
-                                <calcite-tooltip reference-element="logo-tooltip">
-                                <span>Explore current world terrestrial ecosystems. Three smaller map views below show the landform, land cover, and climate contributing to each distinct ecosystem.</span>
-                              </calcite-tooltip></span> <span>EcoExplorer</span> <span class='divider'></span> <img src='libraries/images/Esri_logo.svg'/> `;
+                   <span>EcoExplorer</span> <span class='divider'></span> <img src='libraries/images/Esri_logo.svg'/> `;
 
 	logoContainer.classList.add('logo');
 	logoContainer.innerHTML = logoHTML;
+
+	logoContainer.addEventListener('click', () => {
+		console.log('a modal will pop up');
+		if (
+			appInfoModal.classList.contains(DOM_id_class_variables['hiddenClass'])
+		) {
+			appInfoModal.classList.remove(DOM_id_class_variables['hiddenClass']);
+		}
+	});
 	return logoContainer;
+};
+
+const createAppModal = (getString) => {
+	const modalContainer = document.createElement('div');
+	modalContainer.id = 'infoModal';
+	modalContainer.classList.add(DOM_id_class_variables['hiddenClass']);
+
+	const modalHTML = `
+                    <div id='info-container'>
+                      <div> Text place holder for the info div</div>
+                      <div class="modal-btn-container">
+                        <btn class="btn close">CLOSE</btn>
+                      </div>
+                    
+                    </div>
+                    `;
+
+	modalContainer.innerHTML = modalHTML;
+
+	modalContainer.addEventListener('click', (event) => {
+		const clickedTarget = event.target;
+		if (
+			clickedTarget.id !== 'info-container' ||
+			clickedTarget.classList.contains('close')
+		) {
+			modalContainer.classList.add(DOM_id_class_variables['hiddenClass']);
+		}
+	});
+
+	document.querySelector('main').append(modalContainer);
+	return modalContainer;
 };
 
 const createViewButtonsUI = (
