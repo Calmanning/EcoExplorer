@@ -31,6 +31,7 @@ import {
 	showInvalidNotificationDiv,
 	showInvalidMapLocationNotificationDiv,
 	createUserIconElement,
+	// buildMobileComponents,
 } from './js/components.js?v=0.01';
 import {
 	updateProjectionModelVisibility,
@@ -89,10 +90,32 @@ const initApp = async () => {
 			getString,
 			isMobileDevice,
 		);
-		const ecosystem2050ProjectionsViewMap =
-			await buildEcosystemProjectionView(hashParams);
 
-		// getCredentials();
+		console.log(isMobileDevice());
+
+		// if (isMobileDevice() === true) {
+		// 	console.log('This is a mobile version');
+
+		// 	buildMobileComponents(
+		// 		config,
+		// 		DOM_id_class_variables,
+		// 		hashParams,
+		// 		wte_categories,
+		// 		dropdownEvents,
+		// 		mapClickEventDelegation,
+		// 		explorerLookupTable,
+		// 		parseAndFormatURL,
+		// 		showInvalidNotificationDiv,
+		// 		createNewCrosshairGraphic,
+		// 		getString,
+		// 	);
+
+		// 	return;
+		// }
+
+		// const ecosystem2050ProjectionsViewMap =
+		// 	await buildEcosystemProjectionView(hashParams);
+
 		//Setting up 'arcgis-map' elements for . Each of the smaller 'map' elements will contain a dropdown
 		const explorerViewComponents = initExplorerViewComponents({
 			config,
@@ -115,7 +138,7 @@ const initApp = async () => {
 			hashParams,
 		});
 
-		viewElements.push(ecosystem2050ProjectionsViewMap);
+		// viewElements.push(ecosystem2050ProjectionsViewMap);
 		console.log(viewElements);
 
 		const mapViews = await initExplorerMapViews({

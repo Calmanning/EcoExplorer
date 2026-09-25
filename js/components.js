@@ -68,7 +68,7 @@ const buildAppHTML = (
 	const dropShadowDiv = document.createElement('div');
 	dropShadowDiv.classList.add(DOM_id_class_variables['viewStyle_shadow']);
 
-	const logo = buildLogoComponent(getString);
+	const logo = buildLogoComponent();
 
 	document.querySelector('main').append(logo);
 	document.querySelector('main').append(dropShadowDiv);
@@ -187,7 +187,7 @@ const buildExplorerModeHTML = (
 ) => {
 	const nonValidNotificationDiv = nonValidCombinationSelection();
 	const nonValidMapLocationDiv = nonValidMapPixel();
-
+	const projectionStatisticsFooter = createProjectionStatisticsHTML();
 	//create container divs for the entire 'Explorer Mode', the mode's main view and the mode's smaller, supplemental divs
 	const explorerModeContainerDiv = document.createElement('div');
 	const explorerModeMainDiv = document.createElement('div');
@@ -218,6 +218,7 @@ const buildExplorerModeHTML = (
 	});
 	explorerModeContainerDiv.append(explorerModeMainDiv);
 	explorerModeContainerDiv.append(explorerModeSupplementalsDiv);
+	explorerModeContainerDiv.append(projectionStatisticsFooter);
 
 	document.querySelector('main').append(explorerModeContainerDiv);
 
@@ -285,62 +286,34 @@ const createMainView = (idString) => {
 	return mainViewDiv;
 };
 
-const buildLogoComponent = (getString) => {
+//Commenting this out for now. Not sure that This is the way to solve the mobile/performance
+// const buildMobileComponents = (
+// 	config,
+// 	DOM_id_class_variables,
+// 	hashParams,
+// 	wte_categories,
+// 	dropdownEvents,
+// 	mapClickEventDelegation,
+// 	explorerLookupTable,
+// 	parseAndFormatURL,
+// 	showInvalidNotificationDiv,
+// 	createNewCrosshairGraphic,
+// 	getString,
+// ) => {
+// 	console.log('building mobile version');
+// };
+
+const buildLogoComponent = () => {
 	const logoContainer = document.createElement('div');
 
-	//old tooltip for the info icon.
-	//<calcite-tooltip reference-element="logo-tooltip">
-	//<span>Explore current world terrestrial ecosystems. Three smaller map views below show the landform, land cover, and climate contributing to each distinct ecosystem.</span>
-	//</calcite-tooltip></span>
-
-	const appInfoModal = createAppModal(getString);
-
 	const logoHTML = `<span><calcite-icon id='logo-tooltip' icon="information" scale="s"></calcite-icon>
-                   <span>EcoExplorer</span> <span class='divider'></span> <img src='libraries/images/Esri_logo.svg'/> `;
+                                <calcite-tooltip reference-element="logo-tooltip">
+                                <span>Explore current world terrestrial ecosystems. Three smaller map views below show the landform, land cover, and climate contributing to each distinct ecosystem.</span>
+                              </calcite-tooltip></span> <span>EcoExplorer</span> <span class='divider'></span> <img src='libraries/images/Esri_logo.svg'/> `;
 
 	logoContainer.classList.add('logo');
 	logoContainer.innerHTML = logoHTML;
-
-	logoContainer.addEventListener('click', () => {
-		console.log('a modal will pop up');
-		if (
-			appInfoModal.classList.contains(DOM_id_class_variables['hiddenClass'])
-		) {
-			appInfoModal.classList.remove(DOM_id_class_variables['hiddenClass']);
-		}
-	});
 	return logoContainer;
-};
-
-const createAppModal = (getString) => {
-	const modalContainer = document.createElement('div');
-	modalContainer.id = 'infoModal';
-	modalContainer.classList.add(DOM_id_class_variables['hiddenClass']);
-
-	const modalHTML = `
-                    <div id='info-container'>
-                      <div> Text place holder for the info div</div>
-                      <div class="modal-btn-container">
-                        <btn class="btn close">CLOSE</btn>
-                      </div>
-                    
-                    </div>
-                    `;
-
-	modalContainer.innerHTML = modalHTML;
-
-	modalContainer.addEventListener('click', (event) => {
-		const clickedTarget = event.target;
-		if (
-			clickedTarget.id !== 'info-container' ||
-			clickedTarget.classList.contains('close')
-		) {
-			modalContainer.classList.add(DOM_id_class_variables['hiddenClass']);
-		}
-	});
-
-	document.querySelector('main').append(modalContainer);
-	return modalContainer;
 };
 
 const createViewButtonsUI = (
@@ -799,4 +772,5 @@ export {
 	showInvalidNotificationDiv,
 	showInvalidMapLocationNotificationDiv,
 	createUserIconElement,
+	// buildMobileComponents
 };

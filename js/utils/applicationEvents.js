@@ -376,14 +376,22 @@ const changeViewMode = (
 		return;
 	}
 
-	const projectionViewContainer = document.querySelector(
-		`#${DOM_id_class_variables['projection_containerDiv']}`,
-	);
-	const projectionViewElement = document.querySelector(
-		`#${DOM_id_class_variables[['projectionMode_mainView']]}`,
+	const ecosystemExploreContainer = document.querySelector(
+		`#${DOM_id_class_variables['explorer_containerDiv']}`,
 	);
 
-	const projectionStatisticsElement = projectionViewElement.querySelector(
+	const exploreArcGisMapView = document.querySelector(
+		`#${DOM_id_class_variables['explorer_ecosystems']}`,
+	);
+
+	// const projectionViewContainer = document.querySelector(
+	// 	`#${DOM_id_class_variables['projection_containerDiv']}`,
+	// );
+	// const projectionViewElement = document.querySelector(
+	// 	`#${DOM_id_class_variables[['projectionMode_mainView']]}`,
+	// );
+
+	const projectionStatisticsElement = ecosystemExploreContainer.querySelector(
 		`#${DOM_id_class_variables['projection_statistics']}`,
 	);
 
@@ -399,6 +407,24 @@ const changeViewMode = (
 		? changeTypeButtons.querySelector(`.${selectedBtnClass}`).value
 		: '';
 
+	const mainViewLayers = exploreArcGisMapView.map.layers.items[0].layers.items;
+	console.log(mainViewLayers);
+
+	const mainViewImageryLayer = mainViewLayers.find((layer) => {
+		return findImageryLayer(layer, config);
+	});
+
+	const mainViewEcosystemLayer = mainViewLayers.find((layer) => {
+		return findEcosystemLayer(layer, config);
+	});
+
+	const mainViewProjectionLayers = mainViewLayers.filter((mainLayer) => {
+		// return findProjectionLayer(layer, config);
+		return config.ecoProjectionLayers__operationalLayers.some(
+			(configLayer) => mainLayer.portalItem.id === configLayer.itemId,
+		);
+	});
+
 	console.log(selectedFilterChange);
 	//determines if the buttons to change the view-mode have been clicked
 	if (targetButton.parentElement.id === 'mode-btns') {
@@ -412,10 +438,38 @@ const changeViewMode = (
 			`.${DOM_id_class_variables['projection_btn_arrow']}`,
 		);
 
-		if (projectionViewContainer.classList.contains(noDisplayClass)) {
-			projectionViewContainer.classList.remove(noDisplayClass);
+		console.log('the ImageryLayer in the Main View', mainViewImageryLayer);
+		console.log('the exploreLayer in the Main View', mainViewEcosystemLayer);
+		console.log(
+			'the PROJECTION Layers in the Main View',
+			mainViewProjectionLayers,
+		);
+		// if (projectionViewContainer.classList.contains(noDisplayClass)) {
+
+		// if (viewModeString === 'change' &&) {
+
+		// }
+
+		if (viewModeString === 'change') {
+			// projectionViewContainer.classList.remove(noDisplayClass);
 			projectionChangeModelButtons.classList.remove(hiddenClass);
 			modeBtnCascadeLabelArrow.classList.remove(hiddenClass);
+
+			//putting 'no display' on the ecosystem explorer
+			// ecosystemExploreView.classList.add(
+			// 	DOM_id_class_variables['noDisplayClass'],
+			// );
+			// mainViewProjectionLayers.forEach((layer) => {
+			// 	layer.visible = true;
+			// });
+
+			//THIS DOESN'T WORK EXACTLY AS PLANNED.
+			//BOTH modes used the imagery layer for rendering. If the
+			mainViewImageryLayer.visible = false;
+			mainViewEcosystemLayer.visible = false;
+
+			console.log('turning on the projection layers');
+			mainViewProjectionLayers.map((layer) => (layer.visible = true));
 
 			cascadeLabelForBtn.forEach((hiddenElement) => {
 				hiddenElement.classList.remove(DOM_id_class_variables['hiddenClass']);
@@ -426,8 +480,57 @@ const changeViewMode = (
 			if (window.innerWidth < 850) {
 				explorerMobileComponent.parentElement.classList.add(hiddenClass);
 			}
+
+			if (selectedFilterChange !== '') {
+				console.log("IT'S TRYING TO RENDER THE CHANGE LAYER");
+				// mainViewProjectionLayers.map((layer) => (layer.visible = true));
+				//this is not a good query phrase 'button' might be too vague.
+				// const changeModelString = event.target.closest('button').value;
+
+				const projectionModelString = projectionChangeModelButtons
+					.querySelector(`.${selectedBtnClass}`)
+					.value.toLowerCase()
+					.trim();
+
+				const projectionStatisticsCategory = changeTypeButtons.querySelector(
+					`.${selectedBtnClass}`,
+				)
+					? changeTypeButtons
+							.querySelector(`.${selectedBtnClass}`)
+							.getAttribute('category')
+					: '';
+
+				updateProjectionModelVisibility(
+					config,
+					exploreArcGisMapView,
+					// projectionViewElement,
+					projectionModelString,
+					selectedFilterChange,
+					mainViewImageryLayer,
+				);
+
+				projectionStatistics(
+					projectionModelString,
+					projectionStatisticsCategory,
+					projectionStatisticsElement,
+					getString,
+				);
+			}
 		} else {
-			projectionViewContainer.classList.add(noDisplayClass);
+			console.log('turning off projection layers');
+			mainViewProjectionLayers.forEach((layer) => {
+				layer.visible = false;
+			});
+			mainViewEcosystemLayer.visible = true;
+			mainViewImageryLayer.visible = true;
+
+			// projectionViewContainer.classList.add(noDisplayClass);
+
+			//removing the no display from the ecosystem explorer parent div
+			// ecosystemExploreView.classList.remove(
+			// 	DOM_id_class_variables['noDisplayClass'],
+			// );
+
 			projectionChangeModelButtons.classList.add(hiddenClass);
 			modeBtnCascadeLabelArrow.classList.add(hiddenClass);
 			changeTypeButtons.classList.add(hiddenClass);
@@ -485,6 +588,8 @@ const changeViewMode = (
 			'the param is true in the applicationEnvents',
 			selectedFilterChange,
 		);
+
+		mainViewProjectionLayers.map((layer) => (layer.visible = true));
 		//this is not a good query phrase 'button' might be too vague.
 		const changeModelString = event.target.closest('button').value;
 
@@ -498,9 +603,11 @@ const changeViewMode = (
 
 		updateProjectionModelVisibility(
 			config,
-			projectionViewElement,
+			exploreArcGisMapView,
+			// projectionViewElement,
 			changeModelString,
 			selectedFilterChange,
+			mainViewImageryLayer,
 		);
 
 		projectionStatistics(
@@ -533,9 +640,11 @@ const changeViewMode = (
 
 		updateProjectionModelVisibility(
 			config,
-			projectionViewElement,
+			exploreArcGisMapView,
+			// projectionViewElement,
 			projectionModelString,
 			changeTypeString,
+			mainViewImageryLayer,
 		);
 
 		console.log('the filter value', projectionStatisticsCategory);
@@ -712,6 +821,31 @@ const toggle_AGOL_Export = ({ DOM_id_class_variables, mapViews }) => {
 		const exportState = true;
 		updateHashParamString({ exportState });
 	}
+};
+
+const findImageryLayer = (mapViewLayer, config) => {
+	console.log(
+		mapViewLayer.portalItem.id,
+		config.dependencies__imageryLayer.itemId,
+	);
+	if (mapViewLayer.portalItem.id === config.dependencies__imageryLayer.itemId) {
+		return mapViewLayer;
+	}
+};
+const findEcosystemLayer = (mapViewLayer, config) => {
+	console.log(
+		mapViewLayer.portalItem.id,
+		config.dependencies__imageryLayer.itemId,
+	);
+	if (mapViewLayer.portalItem.id === config.dependencies__exploreLayer.itemId) {
+		return mapViewLayer;
+	}
+};
+
+const findProjectionLayers = (mapViewLayer, config) => {
+	return config.ecoProjectionLayers__operationalLayers.some(
+		(configLayer) => mapViewLayer.portalItem.id === configLayer.itemId,
+	);
 };
 
 export {

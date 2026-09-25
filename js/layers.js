@@ -246,6 +246,7 @@ const updateProjectionModelVisibility = async (
 	viewElement,
 	projectionModelString,
 	changeTypeString,
+	mainViewImageryLayer,
 ) => {
 	let projectionModelLayer;
 	let ecoLayer;
@@ -282,7 +283,8 @@ const updateProjectionModelVisibility = async (
 				},
 			);
 			layer.visible = true;
-			ecoLayer.rasterFunction = null;
+			// ecoLayer.rasterFunction = null;
+			mainViewImageryLayer.visible = true;
 			layer.refresh();
 		}
 	});

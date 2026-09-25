@@ -142,7 +142,22 @@ const initExplorerMapViews = async ({
 
 				addSearchComponent({ viewComponentElement, DOM_id_class_variables });
 
+				const projectionLayers = await createApplicationLayers(
+					config.ecoProjectionLayers__operationalLayers,
+				);
+
+				console.log('PROJECTION LAYERS', projectionLayers);
+				viewComponentElement.map.layers.items[0].addMany(projectionLayers);
+				// viewComponentElement.map.layers.push(projectionLayers);
+
+				const loadPromises =
+					viewComponentElement.map.layers.items[0].layers.map(async (layer) => {
+						await layer.when();
+					});
+
+				await Promise.all(loadPromises);
 				viewComponentElement.map.layers.add(crosshairGraphicLayer);
+				console.log(viewComponentElement.map.layers);
 			}
 
 			if (
@@ -154,6 +169,7 @@ const initExplorerMapViews = async ({
 				);
 
 				addSearchComponent({ viewComponentElement, DOM_id_class_variables });
+
 				viewComponentElement.map.layers.items[0].addMany(projectionLayers);
 
 				const loadPromises =

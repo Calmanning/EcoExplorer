@@ -9,7 +9,12 @@ const addExportFormToMap = (
 	//should the 'main' element be sent as a parameter? I think YES, so We'll have to take some time to make that a part of the
 	const params = parseAndFormatURL();
 	console.log(params['mode']);
-	const map = getMapViewForExport(mapViews, params['mode']);
+	const map = mapViews[0];
+	// const operationalLayers = getMapViewForExport(
+	// 	mapViews,
+	// 	params['mode'],
+	// 	config,
+	// );
 
 	const exportUI_HTML = buildExportUI(DOM_id_class_variables, hashParams, map);
 	// const exportForm_textFields = exportUI_HTML.querySelectorAll('textarea');
@@ -38,6 +43,8 @@ const addExportFormToMap = (
 			createMapExportDefinition,
 			config,
 			map,
+			// operationalLayers,
+			hashParams,
 		});
 	});
 };
@@ -129,15 +136,45 @@ const createBtn = (string, classString) => {
 	btn.innerText = string;
 	return btn;
 };
-const getMapViewForExport = (mapViews, mapMode) => {
+//YOU NEED TO UPDATE THIS function. No longer using different mapView for the Projection Layers.
+//certain layers will need to be removed from the main mapView (mapView[0]) for the export process.
+const getMapViewForExport = (mapViews, mapMode, config) => {
 	console.log(mapMode);
 	const exportMap =
 		mapMode === 'explore' || mapMode === ''
-			? mapViews[0]
-			: mapViews[mapViews.length - 1];
+			? removeProjectionLayers(mapViews[0], config)
+			: removeExploreLayers(mapViews[0], config);
+
+	//? mapViews[0] //this will be a new function called removeProjectionLayers()
+	//: mapViews[mapViews.length - 1]; // this will be removeExploreLayer (the World Terrestrial Ecosystems v2 for 2015 layer)
 
 	console.log(exportMap);
 	return exportMap;
+};
+
+const removeProjectionLayers = (operationalLayers, config) => {
+	const operationalGroupLayer = config.operationalLayers[0];
+
+	const arrayMapViewLayers = operationalLayers;
+	const projectionLayers = config.ecoProjectionLayers__operationalLayers;
+
+	const layerArrayNoExploreLayer = arrayMapViewLayers.filter(
+		(layer) =>
+			projectionLayers.some(
+				(filteringLayer) => filteringLayer.title === layer.title,
+			) === false,
+	);
+	console.log(
+		'the array with the projection layer removed',
+		layerArrayNoExploreLayer,
+	);
+
+	// operationalGroupLayer.layers = layerArrayNoExploreLayer;
+	return layerArrayNoExploreLayer;
+};
+
+const removeExploreLayers = () => {
+	const exploreLayer = config.dependencies__exploreLayer;
 };
 
 const createBaseMapLayersDefinitions = (basemapDetails, config) => {
@@ -169,20 +206,39 @@ const createBaseMapLayersDefinitions = (basemapDetails, config) => {
 	return basemapLayers;
 };
 
-const createOperationalLayersForExport = ({ operationalLayers, config }) => {
+const createOperationalLayersForExport = ({
+	operationalLayers,
+	config,
+	hashParams,
+}) => {
 	//IS THIS NAMING CONVENTION AND SITUATION A BAD IDEA?
+	console.log('the op layers', operationalLayers);
+	const mapMode = hashParams.mode;
 	const arrayOfTargetLayers = operationalLayers;
 	const operationalLayersArray = [];
 
-	const thing = arrayOfTargetLayers.map((layer) => {
-		if (layer.type === 'group') {
-			const operationalLayers = layer.layers.items;
+	// arrayOfTargetLayers.filter((layer) => layer?.type === 'graphics');
 
+	const arrayOfEditedLayers = arrayOfTargetLayers.map((layer) => {
+		if (layer.type === 'group') {
+			const operationalLayers =
+				mapMode === 'explore' || mapMode === ''
+					? removeProjectionLayers(layer.layers.items, config)
+					: removeExploreLayers(layer.layers.items, config);
+
+			console.log(
+				'the layers that will be fed into the layer generator',
+				operationalLayers,
+			);
 			const groupLayerParameters = {
 				title: layer.title,
 				layerType: 'GroupLayer',
 				effect: getLayerEffect({ layer, config }),
-				layers: createOperationalLayersForExport({ operationalLayers, config }),
+				layers: createOperationalLayersForExport({
+					operationalLayers,
+					config,
+					hashParams,
+				}),
 				visibility: layer.visible,
 				minScale: layer.minScale,
 				maxScale: layer.maxScale,
@@ -192,17 +248,22 @@ const createOperationalLayersForExport = ({ operationalLayers, config }) => {
 			return groupLayerParameters;
 		}
 
+		// if (layer.type === 'graphics') {
+		// 	console.log('this layer is rejected', layer);
+		// 	return;
+		// }
+
 		const newLayerParameters = {
 			title: layer.title,
 			layerType: getLayerType({ layer, config }),
-			itemId: layer.portalItem.id,
-			url: layer.url,
+			itemId: layer?.portalItem?.id || '',
+			url: layer?.url || '',
 			blendMode: layer?.blendMode || 'normal',
 			interpolation: getLayerInterpolation({ layer, config }) || '',
 			effect: getLayerEffect({ layer, config }),
 			layerDefinition: {
 				drawingInfo: {
-					renderer: layer?.renderer,
+					renderer: layer?.renderer || '',
 				},
 			},
 			renderingRule: {
@@ -217,10 +278,13 @@ const createOperationalLayersForExport = ({ operationalLayers, config }) => {
 		return newLayerParameters;
 	});
 
-	return thing;
+	// arrayOfEditedLayers.filter((layer) => layer === undefined);
+	return arrayOfEditedLayers;
 };
 
 const getLayerType = ({ layer, config }) => {
+	console.log(layer);
+
 	const targetLayer = layer.portalItem.id;
 	console.log(targetLayer);
 
@@ -304,17 +368,23 @@ const getLayerInterpolation = ({ layer }) => {
 	return InterpolationLookupTable[layerInterpolationString];
 };
 
-const createMapExportDefinition = (config, map, exportUI_HTML) => {
+const createMapExportDefinition = (config, map, exportUI_HTML, hashParams) => {
 	const exportForm_textFields = exportUI_HTML.querySelectorAll('textarea');
 	const basemapInfo = createBaseMapLayersDefinitions(map.map.basemap, config);
 
 	const operationalLayers = map.map.layers;
+	console.log(map.map);
 	operationalLayers.items.splice(1, 1);
 	const operationalLayersForExport = createOperationalLayersForExport({
 		operationalLayers,
 		config,
+		hashParams,
 	});
 
+	// operationalLayersForExport.items.((layer) => layer === undefined);
+	operationalLayersForExport.map((layer) => {
+		console.log(layer);
+	});
 	// console.log(exportForm_textFields);
 	// exportForm_textFields.forEach((node) => {
 	// 	console.log(node);
@@ -370,6 +440,8 @@ const exportFormEvents = ({
 	createMapExportDefinition,
 	config,
 	map,
+	hashParams,
+	// operationalLayers,
 }) => {
 	if (event.target.classList.contains('export')) {
 		createWebMap_process({
@@ -381,16 +453,10 @@ const exportFormEvents = ({
 			config,
 			exportUI_HTML,
 			map,
+			hashParams,
+			// operationalLayers,
 		});
 	}
-	// console.log('export ui event');
-	// if (event.target.classList.contains('cancel')) {
-	// 	exportUI_HTML.remove();
-	// }
-
-	// if (event.target.classList.contains('open-webmap')) {
-	// 	exportUI_HTML.remove();
-	// }
 };
 
 const createWebMap_process = async ({
@@ -401,11 +467,13 @@ const createWebMap_process = async ({
 	config,
 	exportUI_HTML,
 	map,
+	hashParams,
 }) => {
 	const mapDataForExport = createMapExportDefinition(
 		config,
 		map,
 		exportUI_HTML,
+		hashParams,
 	);
 	const exportMapResponse = await sendExportRequest(
 		mapDataForExport,

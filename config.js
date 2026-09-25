@@ -15,7 +15,7 @@ const config = {
 		//Japan
 		// center: [137, 36],
 		//county-level zoom
-		zoom: 4,
+		zoom: 3,
 		//country-level
 		// zoom: 7,
 		constraints__minZoom: 3,
@@ -27,6 +27,11 @@ const config = {
 		title: 'World Terrestrial Ecosystems v2 for 2015',
 		itemId: '2e315bb2cd3547d3ac6bfcaaa3daac4f',
 		url: 'https://tiledimageservices.arcgis.com/jIL9msH9OI208GCb/arcgis/rest/services/WTEWTE_2015_Chelsa_Chen__HammondLayer/ImageServer',
+	},
+	dependencies__imageryLayer: {
+		title: 'World Imagery',
+		itemId: '10df2279f9684e4a9f6a7f08febac2a9',
+		url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer',
 	},
 	operationalLayers: [
 		{
