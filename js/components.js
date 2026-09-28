@@ -237,6 +237,7 @@ const initExplorerViewComponents = ({
 	showInvalidNotificationDiv,
 	createNewCrosshairGraphic,
 	getString,
+	isMobileDevice,
 }) => {
 	const arrayOfExplorerViewComponents = [];
 
@@ -247,6 +248,10 @@ const initExplorerViewComponents = ({
 	arrayOfExplorerViewComponents.push(mainExplorerViewComponent);
 
 	const supplementalViewComponentsElements = wte_categories.map((category) => {
+		if (isMobileDevice() === true) {
+			console.log('no supplements');
+			return;
+		}
 		const supplementalExplorerViewComponent = createSupplementalViewHTMLs({
 			config,
 			DOM_id_class_variables,

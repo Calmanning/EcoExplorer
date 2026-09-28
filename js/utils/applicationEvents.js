@@ -8,6 +8,7 @@ const setViewMode = (hashParams) => {
 };
 
 const isMobileDevice = () => {
+	return true;
 	//checking for device type. Checking if it's a mobile user.
 	let istouchEnabled;
 	let isMobileDeviceDetected;
@@ -438,12 +439,13 @@ const changeViewMode = (
 			`.${DOM_id_class_variables['projection_btn_arrow']}`,
 		);
 
-		console.log('the ImageryLayer in the Main View', mainViewImageryLayer);
-		console.log('the exploreLayer in the Main View', mainViewEcosystemLayer);
-		console.log(
-			'the PROJECTION Layers in the Main View',
-			mainViewProjectionLayers,
-		);
+		// console.log('the ImageryLayer in the Main View', mainViewImageryLayer);
+		// console.log('the exploreLayer in the Main View', mainViewEcosystemLayer);
+		// console.log(
+		// 	'the PROJECTION Layers in the Main View',
+		// 	mainViewProjectionLayers,
+		// );
+
 		// if (projectionViewContainer.classList.contains(noDisplayClass)) {
 
 		// if (viewModeString === 'change' &&) {
@@ -465,6 +467,7 @@ const changeViewMode = (
 
 			//THIS DOESN'T WORK EXACTLY AS PLANNED.
 			//BOTH modes used the imagery layer for rendering. If the
+
 			mainViewImageryLayer.visible = false;
 			mainViewEcosystemLayer.visible = false;
 
@@ -482,7 +485,6 @@ const changeViewMode = (
 			}
 
 			if (selectedFilterChange !== '') {
-				console.log("IT'S TRYING TO RENDER THE CHANGE LAYER");
 				// mainViewProjectionLayers.map((layer) => (layer.visible = true));
 				//this is not a good query phrase 'button' might be too vague.
 				// const changeModelString = event.target.closest('button').value;
@@ -507,6 +509,7 @@ const changeViewMode = (
 					projectionModelString,
 					selectedFilterChange,
 					mainViewImageryLayer,
+					mainViewEcosystemLayer,
 				);
 
 				projectionStatistics(
@@ -589,7 +592,8 @@ const changeViewMode = (
 			selectedFilterChange,
 		);
 
-		mainViewProjectionLayers.map((layer) => (layer.visible = true));
+		// mainViewProjectionLayers.map((layer) => (layer.visible = true));
+
 		//this is not a good query phrase 'button' might be too vague.
 		const changeModelString = event.target.closest('button').value;
 
@@ -608,6 +612,7 @@ const changeViewMode = (
 			changeModelString,
 			selectedFilterChange,
 			mainViewImageryLayer,
+			mainViewEcosystemLayer,
 		);
 
 		projectionStatistics(
@@ -645,6 +650,7 @@ const changeViewMode = (
 			projectionModelString,
 			changeTypeString,
 			mainViewImageryLayer,
+			mainViewEcosystemLayer,
 		);
 
 		console.log('the filter value', projectionStatisticsCategory);

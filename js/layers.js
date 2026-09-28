@@ -247,9 +247,10 @@ const updateProjectionModelVisibility = async (
 	projectionModelString,
 	changeTypeString,
 	mainViewImageryLayer,
+	mainViewEcosystemLayer,
 ) => {
 	let projectionModelLayer;
-	let ecoLayer;
+	// let ecoLayer;
 
 	const projectionViewLayers =
 		viewElement.view.map.layers.items[0].layers.items;
@@ -264,9 +265,9 @@ const updateProjectionModelVisibility = async (
 	//this should become it's own named function.
 	projectionViewLayers.forEach(async (layer) => {
 		//this is a bad way to find the layer. use the itemId when you get more time.
-		if (layer.title === config.dependencies__exploreLayer.title) {
-			ecoLayer = layer;
-		}
+		// if (layer.title === config.dependencies__exploreLayer.title) {
+		// 	ecoLayer = layer;
+		// }
 		if (layer.id.includes('projection')) {
 			layer.visible = false;
 		}
@@ -282,8 +283,9 @@ const updateProjectionModelVisibility = async (
 					renderClass.symbol.color = transparentColor;
 				},
 			);
-			layer.visible = true;
+			// mainViewEcosystemLayer.visible = false;
 			// ecoLayer.rasterFunction = null;
+			layer.visible = true;
 			mainViewImageryLayer.visible = true;
 			layer.refresh();
 		}
