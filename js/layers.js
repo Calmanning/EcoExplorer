@@ -185,14 +185,14 @@ const initGroupLayer = async (layerData) => {
 	return groupLayer;
 };
 
-const createCrossHairGraphicLayer = async () => {
+const createCrossHairGraphicLayer = async (config) => {
 	try {
 		const [GraphicsLayer] = await $arcgis.import([
 			'@arcgis/core/layers/GraphicsLayer.js',
 		]);
 		const crosshairLayer = new GraphicsLayer({
-			id: graphicLayerId,
-			title: graphicLayerId,
+			id: config.graphicLayerId,
+			title: config.graphicLayerId,
 			graphics: [],
 		});
 		return crosshairLayer;
@@ -206,12 +206,14 @@ const createNewCrosshairGraphic = async ({
 	mapPoint,
 	explorerMainMapView,
 	noPixelInfo,
+	config,
 }) => {
 	try {
 		const [Graphic] = await $arcgis.import(['@arcgis/core/Graphic.js']);
 
-		const crosshairGraphicLayer =
-			explorerMainMapView.map.findLayerById(graphicLayerId);
+		const crosshairGraphicLayer = explorerMainMapView.map.findLayerById(
+			config.graphicLayerId,
+		);
 
 		crosshairGraphicLayer.graphics.removeAll();
 
@@ -252,6 +254,8 @@ const updateProjectionModelVisibility = async (
 	let projectionModelLayer;
 	// let ecoLayer;
 
+	console.log(viewElement.view.map.layers.items[0]);
+	console.log(projectionModelString);
 	const projectionViewLayers =
 		viewElement.view.map.layers.items[0].layers.items;
 	// const filterValueArrays = changeTypeString.split(',');
@@ -271,6 +275,7 @@ const updateProjectionModelVisibility = async (
 		if (layer.id.includes('projection')) {
 			layer.visible = false;
 		}
+		console.log(layer.id.includes(projectionModelString));
 		if (layer.id.includes(projectionModelString)) {
 			layer.renderer.uniqueValueGroups[0].classes.forEach(
 				(renderClass, index) => {

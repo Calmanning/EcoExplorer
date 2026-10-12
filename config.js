@@ -22,6 +22,7 @@ const config = {
 		constraints__snapZoom: false,
 		showAttribution: false,
 	},
+	graphicLayerId: 'crosshair',
 	dependencies__exploreLayer: {
 		//WTE Ecosystem data
 		title: 'World Terrestrial Ecosystems v2 for 2015',

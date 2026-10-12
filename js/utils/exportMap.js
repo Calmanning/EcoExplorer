@@ -101,17 +101,17 @@ const buildExportUI = (DOM_id_class_variables, hashParams, map) => {
                              <form id="export-form">
                                <div class='form-element'>
                                  <label> ArcGIS Online Web Map Title* </label>
-                                 <br>
+                                 
                                  <textarea class='title' type='text' contenteditable='true'>${map.id || ''}  </textarea>
                                </div>
                                <div class='form-element'>
                                  <label>Tags</label>
-                                 <br>
+                                 
                                  <textarea class='tags' type='text' contenteditable='true'></textarea>
                                </div>
                                <div class='form-element'>
                                  <label>Summary</label>
-                                 <br>
+                                 
                                  <textarea class='summary' type='text' contenteditable='true'></textarea>
                                </div>
                                <div class='form-btn-container'>

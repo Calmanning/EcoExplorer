@@ -138,7 +138,7 @@ const initExplorerMapViews = async ({
 				viewComponentElement.id ===
 				DOM_id_class_variables['explorer_ecosystems']
 			) {
-				const crosshairGraphicLayer = await createCrossHairGraphicLayer();
+				const crosshairGraphicLayer = await createCrossHairGraphicLayer(config);
 
 				addSearchComponent({ viewComponentElement, DOM_id_class_variables });
 
@@ -245,7 +245,7 @@ const initExplorerViewListeners = async ({
 		reactiveUtils.when(
 			() => viewComponent.view['zoom'],
 			() => {
-				adjustMapZoomLevel({ mapViews, viewComponent, DOM_id_class_variables });
+				adjustMapZoomLevel({ mapViews, viewComponent });
 			},
 		);
 
@@ -259,6 +259,7 @@ const initExplorerViewListeners = async ({
 		const doneUpdatingRemoveLoader = reactiveUtils.watch(
 			() => viewComponent['updating'] === false,
 			() => {
+				//change class string to variable.
 				document.querySelector(`.initAppLoader`)?.remove();
 			},
 			{ once: true },
@@ -272,20 +273,12 @@ const recenterMaps = ({ mapViews, viewComponent }) => {
 	});
 };
 
-const adjustMapZoomLevel = ({
-	mapViews,
-	viewComponent,
-	DOM_id_class_variables,
-}) => {
-	console.log('zoom event source', viewComponent.view);
+const adjustMapZoomLevel = ({ mapViews, viewComponent }) => {
 	mapViews.forEach((view) => {
 		view.zoom = viewComponent['zoom'];
 	});
 };
-// viewComponent === DOM_id_class_variables['explorer_ecosystems'] &&
-// 			view.id !== DOM_id_class_variables['projectionMode_mainView']
-// 				? viewComponent['zoom'] + 1
-// 				: viewComponent['zoom'];
+
 const viewClickEvent = (
 	config,
 	sessionToken,
@@ -296,6 +289,7 @@ const viewClickEvent = (
 	showInvalidNotificationDiv,
 	updateHashParamString,
 	getString,
+	isMobileDevice,
 ) => {
 	const IdentifyEvent = mapViews.map((viewComponent) => {
 		viewComponent.addEventListener('arcgisViewClick', (event) => {
@@ -312,6 +306,7 @@ const viewClickEvent = (
 				showInvalidNotificationDiv,
 				createNewCrosshairGraphic,
 				getString,
+				isMobileDevice,
 			});
 		});
 	});

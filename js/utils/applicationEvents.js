@@ -8,13 +8,12 @@ const setViewMode = (hashParams) => {
 };
 
 const isMobileDevice = () => {
-	return true;
 	//checking for device type. Checking if it's a mobile user.
-	let istouchEnabled;
+	let isTouchEnabled;
 	let isMobileDeviceDetected;
 
 	if (navigator.maxTouchPoints > 0) {
-		istouchEnabled = true;
+		isTouchEnabled = true;
 	}
 
 	if (
@@ -25,7 +24,7 @@ const isMobileDevice = () => {
 		isMobileDeviceDetected = true;
 	}
 
-	if (istouchEnabled && isMobileDeviceDetected) {
+	if (isTouchEnabled && isMobileDeviceDetected) {
 		return true;
 	}
 
@@ -385,6 +384,10 @@ const changeViewMode = (
 		`#${DOM_id_class_variables['explorer_ecosystems']}`,
 	);
 
+	const supplementalMapViewsElement = ecosystemExploreContainer.querySelector(
+		`#${DOM_id_class_variables['explorer_supplementalViews']}`,
+	);
+	console.log(supplementalMapViewsElement);
 	// const projectionViewContainer = document.querySelector(
 	// 	`#${DOM_id_class_variables['projection_containerDiv']}`,
 	// );
@@ -426,7 +429,12 @@ const changeViewMode = (
 		);
 	});
 
-	console.log(selectedFilterChange);
+	const graphicLayer = exploreArcGisMapView.map.layers.items.find(
+		(layer) => layer.id === config.graphicLayerId,
+	);
+
+	console.log(config.graphicLayerId);
+	console.log(graphicLayer);
 	//determines if the buttons to change the view-mode have been clicked
 	if (targetButton.parentElement.id === 'mode-btns') {
 		const viewModeString = event.target.closest('button').value;
@@ -477,6 +485,14 @@ const changeViewMode = (
 			cascadeLabelForBtn.forEach((hiddenElement) => {
 				hiddenElement.classList.remove(DOM_id_class_variables['hiddenClass']);
 			});
+
+			//The isn't my preferred way to manage these
+			supplementalMapViewsElement.classList.add(
+				DOM_id_class_variables['hiddenClass'],
+			);
+			exploreArcGisMapView.classList.add('full-screen');
+			graphicLayer.visible = false;
+
 			if (projectionChangeModelButtons.querySelector(`.${selectedBtnClass}`)) {
 				changeTypeButtons.classList.remove(hiddenClass);
 			}
@@ -526,6 +542,12 @@ const changeViewMode = (
 			});
 			mainViewEcosystemLayer.visible = true;
 			mainViewImageryLayer.visible = true;
+
+			supplementalMapViewsElement.classList.remove(
+				DOM_id_class_variables['hiddenClass'],
+			);
+			exploreArcGisMapView.classList.remove('full-screen');
+			graphicLayer.visible = true;
 
 			// projectionViewContainer.classList.add(noDisplayClass);
 
@@ -681,7 +703,6 @@ const dropdownEvents = async (
 	createNewCrosshairGraphic,
 	getString,
 ) => {
-	console.log('dropdown evenrts', getString);
 	console.log('dropdown evenrts', event.target);
 	console.log('dropdown evenrts', event.target.closest('.choice'));
 
@@ -854,6 +875,56 @@ const findProjectionLayers = (mapViewLayer, config) => {
 	);
 };
 
+const manageProjectionLayerSwitch = (
+	exploreArcGisMapView,
+	DOM_id_class_variables,
+	config,
+) => {
+	console.log(
+		'running the projection layer switch function.',
+		exploreArcGisMapView,
+	);
+	const mainViewLayers =
+		exploreArcGisMapView.view.map.layers.items[0].layers.items;
+
+	const ecosystemExploreContainer = document.querySelector(
+		`#${DOM_id_class_variables['explorer_containerDiv']}`,
+	);
+
+	const mainViewImageryLayer = mainViewLayers.find((layer) => {
+		return findImageryLayer(layer, config);
+	});
+
+	const mainViewEcosystemLayer = mainViewLayers.find((layer) => {
+		return findEcosystemLayer(layer, config);
+	});
+
+	const supplementalMapViewsElement = ecosystemExploreContainer.querySelector(
+		`#${DOM_id_class_variables['explorer_supplementalViews']}`,
+	);
+
+	const projectionStatisticsElement = ecosystemExploreContainer.querySelector(
+		`#${DOM_id_class_variables['projection_statistics']}`,
+	);
+
+	const explorerMobileComponent = document.querySelector(
+		`#${DOM_id_class_variables['explore_mobile_component']}`,
+	);
+
+	const graphicLayer = exploreArcGisMapView.view.map.layers.items.find(
+		(layer) => layer.id === config.graphicLayerId,
+	);
+
+	graphicLayer.visible = false;
+	mainViewImageryLayer.visible = false;
+	mainViewEcosystemLayer.visible = false;
+
+	supplementalMapViewsElement.classList.add(
+		DOM_id_class_variables['hiddenClass'],
+	);
+	exploreArcGisMapView.classList.add('full-screen');
+};
+
 export {
 	isMobileDevice,
 	setViewMode,
@@ -862,4 +933,5 @@ export {
 	initAppTopLevelEventListener,
 	toggle_AGOL_Export,
 	manageMobileVersion,
+	manageProjectionLayerSwitch,
 };

@@ -68,7 +68,7 @@ const buildAppHTML = (
 	const dropShadowDiv = document.createElement('div');
 	dropShadowDiv.classList.add(DOM_id_class_variables['viewStyle_shadow']);
 
-	const logo = buildLogoComponent();
+	const logo = buildLogoComponent(getString);
 
 	document.querySelector('main').append(logo);
 	document.querySelector('main').append(dropShadowDiv);
@@ -145,11 +145,31 @@ const buildExplorerMode = ({
 	explorerViewComponents,
 	wte_categories,
 	hashParams,
+	config,
+	DOM_id_class_variables,
+	dropdownEvents,
+	mapClickEventDelegation,
+	explorerLookupTable,
+	parseAndFormatURL,
+	showInvalidNotificationDiv,
+	createNewCrosshairGraphic,
+	getString,
+	isMobileDevice,
 }) => {
 	const viewContainer = buildExplorerModeHTML(
 		explorerViewComponents,
 		wte_categories,
 		hashParams,
+		config,
+		DOM_id_class_variables,
+		dropdownEvents,
+		mapClickEventDelegation,
+		explorerLookupTable,
+		parseAndFormatURL,
+		showInvalidNotificationDiv,
+		createNewCrosshairGraphic,
+		getString,
+		isMobileDevice,
 	);
 	// explorerViewComponents.map((component) => {
 	// 	viewContainer.append(component);
@@ -158,7 +178,11 @@ const buildExplorerMode = ({
 	return explorerViewComponents;
 };
 
-const createMobileBackgroundElement = (wte_categories) => {
+const createMobileBackgroundElement = (
+	wte_categories,
+	dropdownsForMobileDevice,
+	isMobileDevice,
+) => {
 	const backgroundDiv = document.createElement('div');
 	backgroundDiv.id = DOM_id_class_variables['mobile_UI'];
 	backgroundDiv.classList.add(`${DOM_id_class_variables['hiddenClass']}`);
@@ -167,13 +191,24 @@ const createMobileBackgroundElement = (wte_categories) => {
 
 	console.log(wte_categories);
 	const mobileLabelsAndDropdown = wte_categories.map((category) => {
-		category.elementID = category.elementID + '-mobile';
+		category.elementID = category.elementID;
+		category.elementHTMLID = category.elementID + '-mobile';
 		const labelElement = createComponentLabel({ category });
+		const dropdown = isMobileDevice()
+			? dropdownsForMobileDevice.find((specificDropdown) => {
+					if (specificDropdown.id.includes(category.elementID)) {
+						return specificDropdown;
+					}
+				})
+			: null;
+
 		// const mobileDropdown = createDropdownComponent({ category });
 
 		labelElement.lastElementChild.remove();
+		labelElement.append(dropdown);
 		// labelElement.append(mobileDropdown);
 		labelContainer.append(labelElement);
+		// labelContainer.append(dropdown);
 	});
 	backgroundDiv.append(labelContainer);
 
@@ -184,7 +219,22 @@ const buildExplorerModeHTML = (
 	explorerViewComponents,
 	wte_categories,
 	hashParams,
+	config,
+	DOM_id_class_variables,
+	dropdownEvents,
+	mapClickEventDelegation,
+	explorerLookupTable,
+	parseAndFormatURL,
+	showInvalidNotificationDiv,
+	createNewCrosshairGraphic,
+	getString,
+	isMobileDevice,
 ) => {
+	console.log(explorerViewComponents);
+	const mainExplorerView = explorerViewComponents.find((view) =>
+		view.id.includes(DOM_id_class_variables['explorer_ecosystems']),
+	);
+	console.log(mainExplorerView);
 	const nonValidNotificationDiv = nonValidCombinationSelection();
 	const nonValidMapLocationDiv = nonValidMapPixel();
 	const projectionStatisticsFooter = createProjectionStatisticsHTML();
@@ -192,8 +242,30 @@ const buildExplorerModeHTML = (
 	const explorerModeContainerDiv = document.createElement('div');
 	const explorerModeMainDiv = document.createElement('div');
 	const explorerModeSupplementalsDiv = document.createElement('div');
+	const dropdownsForMobileDevice = isMobileDevice()
+		? createMobileDropdownComponentWithEventListener({
+				wte_categories,
+				mainExplorerView,
+				hashParams,
+				config,
+				DOM_id_class_variables,
+				dropdownEvents,
+				mapClickEventDelegation,
+				explorerLookupTable,
+				parseAndFormatURL,
+				showInvalidNotificationDiv,
+				createNewCrosshairGraphic,
+				getString,
+				isMobileDevice,
+			})
+		: null;
 
-	const mobileBackgroundDiv = createMobileBackgroundElement(wte_categories);
+	console.log('mobile dropdowns', dropdownsForMobileDevice);
+	const mobileBackgroundDiv = createMobileBackgroundElement(
+		wte_categories,
+		dropdownsForMobileDevice,
+		isMobileDevice,
+	);
 
 	//assign IDs to the container divs
 	explorerModeContainerDiv.id = DOM_id_class_variables.explorer_containerDiv;
@@ -216,6 +288,7 @@ const buildExplorerModeHTML = (
 		//all other view components go into the supplemental container
 		explorerModeSupplementalsDiv.append(viewComponent);
 	});
+
 	explorerModeContainerDiv.append(explorerModeMainDiv);
 	explorerModeContainerDiv.append(explorerModeSupplementalsDiv);
 	explorerModeContainerDiv.append(projectionStatisticsFooter);
@@ -247,11 +320,56 @@ const initExplorerViewComponents = ({
 
 	arrayOfExplorerViewComponents.push(mainExplorerViewComponent);
 
+	console.log(wte_categories);
+	if (isMobileDevice() === true) {
+		console.log('no supplements');
+
+		return arrayOfExplorerViewComponents;
+		console.log(wte_categories);
+		const arrayOfMobileDropdowns = wte_categories.map((category) => {
+			const mobileDropdowns = createDropdownComponent({
+				category,
+				getString,
+				isMobileDevice,
+			});
+
+			mainExplorerViewComponent.append(mobileDropdowns);
+			console.log(
+				document.querySelector(
+					`#${DOM_id_class_variables['explorer_mainView']}`,
+				),
+			);
+
+			mobileDropdowns.addEventListener('click', (event) => {
+				dropdownEvents(
+					// viewDiv,
+					mainExplorerViewComponent,
+					DOM_id_class_variables,
+					mobileDropdowns,
+					event,
+					config,
+					hashParams,
+					hiddenClass,
+					mapClickEventDelegation,
+					explorerLookupTable,
+					parseAndFormatURL,
+					showInvalidNotificationDiv,
+					createNewCrosshairGraphic,
+					getString,
+				);
+			});
+
+			console.log('mobile dropdowns', mobileDropdowns);
+			// 	return mobileDropdowns;
+		});
+		return arrayOfExplorerViewComponents;
+		// console.log(arrayOfMobileDropdowns)
+
+		// return arrayOfMobileDropdowns;
+	}
+
 	const supplementalViewComponentsElements = wte_categories.map((category) => {
-		if (isMobileDevice() === true) {
-			console.log('no supplements');
-			return;
-		}
+		console.log('is this happening?');
 		const supplementalExplorerViewComponent = createSupplementalViewHTMLs({
 			config,
 			DOM_id_class_variables,
@@ -264,6 +382,7 @@ const initExplorerViewComponents = ({
 			showInvalidNotificationDiv,
 			createNewCrosshairGraphic,
 			getString,
+			isMobileDevice,
 		});
 
 		arrayOfExplorerViewComponents.push(supplementalExplorerViewComponent);
@@ -291,34 +410,95 @@ const createMainView = (idString) => {
 	return mainViewDiv;
 };
 
-//Commenting this out for now. Not sure that This is the way to solve the mobile/performance
-// const buildMobileComponents = (
-// 	config,
-// 	DOM_id_class_variables,
-// 	hashParams,
-// 	wte_categories,
-// 	dropdownEvents,
-// 	mapClickEventDelegation,
-// 	explorerLookupTable,
-// 	parseAndFormatURL,
-// 	showInvalidNotificationDiv,
-// 	createNewCrosshairGraphic,
-// 	getString,
-// ) => {
-// 	console.log('building mobile version');
-// };
-
-const buildLogoComponent = () => {
+const buildLogoComponent = (getString) => {
 	const logoContainer = document.createElement('div');
 
+	//old tooltip for the info icon.
+	//<calcite-tooltip reference-element="logo-tooltip">
+	//<span>Explore current world terrestrial ecosystems. Three smaller map views below show the landform, land cover, and climate contributing to each distinct ecosystem.</span>
+	//</calcite-tooltip></span>
+
+	const appInfoModal = createAppModal(getString);
+
 	const logoHTML = `<span><calcite-icon id='logo-tooltip' icon="information" scale="s"></calcite-icon>
-                                <calcite-tooltip reference-element="logo-tooltip">
-                                <span>Explore current world terrestrial ecosystems. Three smaller map views below show the landform, land cover, and climate contributing to each distinct ecosystem.</span>
-                              </calcite-tooltip></span> <span>EcoExplorer</span> <span class='divider'></span> <img src='libraries/images/Esri_logo.svg'/> `;
+                   <span>EcoExplorer</span> <span class='divider'></span> <img src='libraries/images/Esri_logo.svg'/> `;
 
 	logoContainer.classList.add('logo');
 	logoContainer.innerHTML = logoHTML;
+
+	logoContainer.addEventListener('click', () => {
+		console.log('a modal will pop up');
+		if (
+			appInfoModal.classList.contains(DOM_id_class_variables['hiddenClass'])
+		) {
+			appInfoModal.classList.remove(DOM_id_class_variables['hiddenClass']);
+		}
+	});
 	return logoContainer;
+};
+
+const createAppModal = (getString) => {
+	const modalContainer = document.createElement('div');
+	modalContainer.id = 'infoModal';
+	modalContainer.classList.add(DOM_id_class_variables['hiddenClass']);
+
+	const modalHTML = `
+                    <div id='info-container'>
+                      <div style="display: flex;
+    flex-direction: row-reverse;"> 
+                       <div><calcite-icon class="close" icon="x" scale="l" /></div>
+                                   </div>
+                        <div id="modalWelcome" style="
+                                  text-align: center; font-size: 2rem;">
+                                  <b>Welcome!</b>
+                        </div>
+                        </br>
+                        <div>
+                          EcoExplorer is a place to learn about Earth’s terrestrial ecosystems. Click any land location to explore the ecosystem there, then see where else in the world that same ecosystem and its characteristics occur.  
+                          </br>
+                        
+                          You can also take a peek into the future by choosing a projection scenario — Sustainable or Self-reliant—to explore how ecosystems may change by 2050.
+                          </br>
+                          </br>
+                        
+                          <b>About the data behind EcoExplorer</b>
+                          </br>
+                          </br>
+                        
+                          In our model, we define an <b>ecosystem</b> as the combination of <b>landform</b> (hills, mountains, etc.), <b>land cover</b> (crops, forests, etc.), and <b>climate region</b> (temperature and moisture regimes). Together, these characteristics define niches where particular types of plants, insects, animals, and other organisms may live.
+                        </div>
+                        </br>
+                        
+                        <div>
+                          Are you interested in the science behind EcoExplorer?  Read the <a href='https://www.sciencedirect.com/science/article/pii/S2351989424005742' target='_blank'>peer reviewed journal article</a>.
+                          Have ArcGIS skills?  Check out the <a href='https://livingatlas.arcgis.com/en/browse/?q=WTE2050#d=2&q=WTE2050' target='_blank'> World Terrestrial Ecosystems layers in the Living Atlas</a>.
+                        </div>
+                        </br>
+                        <div>
+                          Tip: The EcoExplorer app features info icons to help you understand more whenever you click on them.
+                        </div>
+                      </div>
+                      
+                      </div>
+                      `;
+
+	// <div class="modal-btn-container">
+	//   <btn class="btn close">CLOSE</btn>
+	// </div>
+	modalContainer.innerHTML = modalHTML;
+
+	modalContainer.addEventListener('click', (event) => {
+		const clickedTarget = event.target;
+		if (
+			!clickedTarget.closest(`#info-container`) ||
+			clickedTarget.classList.contains('close')
+		) {
+			modalContainer.classList.add(DOM_id_class_variables['hiddenClass']);
+		}
+	});
+
+	document.querySelector('main').append(modalContainer);
+	return modalContainer;
 };
 
 const createViewButtonsUI = (
@@ -498,6 +678,7 @@ const createSupplementalViewHTMLs = ({
 	showInvalidNotificationDiv,
 	createNewCrosshairGraphic,
 	getString,
+	isMobileDevice,
 }) => {
 	//
 	// console.log(category);
@@ -508,6 +689,7 @@ const createSupplementalViewHTMLs = ({
 	const dropdownElement = createDropdownComponent({
 		category,
 		getString,
+		isMobileDevice,
 	});
 
 	const bottomLabel = createComponentLabel({ category });
@@ -547,7 +729,7 @@ const toggleDropdown = (dropdownContainer, expand = null) => {
 	dropdownContainer.setAttribute('aria-expanded', isOpen);
 };
 
-const createDropdownComponent = ({ category, getString }) => {
+const createDropdownComponent = ({ category, getString, isMobileDevice }) => {
 	console.log(category);
 	const dropdownFeatures = category.features;
 	console.log(dropdownFeatures);
@@ -557,7 +739,7 @@ const createDropdownComponent = ({ category, getString }) => {
       <li class="choice" data-id="${featureEntry['id']}" value="${featureEntry['wte']}">${getString(featureEntry['wte'].trim())}
       <calcite-icon id="${featureEntry['wte']}-tooltip" icon="information" scale="s"></calcite-icon>
       <calcite-tooltip reference-element="${featureEntry['wte']}-tooltip">
-        <span>${getString(featureEntry['wte'].trim())}__tooltip</span>
+        <span>${getString(featureEntry['wte'].trim() + '__tooltip')}</span>
       </calcite-tooltip>
       </li>`;
 
@@ -579,9 +761,63 @@ const createDropdownComponent = ({ category, getString }) => {
 	const dropdownContainer = document.createElement('div');
 	dropdownContainer.id = `${category.elementID}-dropdown`;
 	dropdownContainer.classList.add(DOM_id_class_variables['dropdownElement']);
+	isMobileDevice() ? dropdownContainer.classList.add('device') : null;
 	dropdownContainer.innerHTML = dropdownHTML;
 
 	return dropdownContainer;
+};
+
+const createMobileDropdownComponentWithEventListener = ({
+	wte_categories,
+	mainExplorerView,
+	hashParams,
+	config,
+	DOM_id_class_variables,
+	dropdownEvents,
+	mapClickEventDelegation,
+	explorerLookupTable,
+	parseAndFormatURL,
+	showInvalidNotificationDiv,
+	createNewCrosshairGraphic,
+	getString,
+	isMobileDevice,
+}) => {
+	const arrayOfMobileDropdowns = wte_categories.map((category) => {
+		const mobileDropdowns = createDropdownComponent({
+			category,
+			getString,
+			isMobileDevice,
+		});
+
+		// mainExplorerView.append(mobileDropdowns);
+		// console.log(
+		// 	document.querySelector(`#${DOM_id_class_variables['explorer_mainView']}`),
+		// );
+
+		mobileDropdowns.addEventListener('click', (event) => {
+			dropdownEvents(
+				// viewDiv,
+				mainExplorerView,
+				DOM_id_class_variables,
+				mobileDropdowns,
+				event,
+				config,
+				hashParams,
+				hiddenClass,
+				mapClickEventDelegation,
+				explorerLookupTable,
+				parseAndFormatURL,
+				showInvalidNotificationDiv,
+				createNewCrosshairGraphic,
+				getString,
+			);
+		});
+
+		console.log('mobile dropdowns', mobileDropdowns);
+		return mobileDropdowns;
+	});
+
+	return arrayOfMobileDropdowns;
 };
 
 const createComponentLabel = ({ category }) => {
@@ -660,6 +896,7 @@ const popOutMapComponent = () => {
 	return popOutMapContainer;
 };
 
+//am I even using this?
 const buildExportUI = (hashParams) => {
 	//building HTML for the export
 	//this could be generated on app load, depending on the hash params.
@@ -671,17 +908,14 @@ const buildExportUI = (hashParams) => {
                             <form id="export-form">
                               <div class='form-element'>
                                 <label> ArcGIS Online Web Map Name* </label>
-                                <br>
                                 <textarea class='title' type='text' contenteditable='true'></textarea>
                               </div>
                               <div class='form-element'>
                                 <label>Tags</label>
-                                <br>
                                 <textarea class='tags' type='text' contenteditable='true'></textarea>
                               </div>
                               <div class='form-element'>
                                 <label>Summary</label>
-                                <br>
                                 <textarea class='summary' type='text' contenteditable='true'></textarea>
                               </div>
                               <div class='form-btn-container'>
