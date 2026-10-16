@@ -16,10 +16,12 @@ const config = {
 		// center: [137, 36],
 		//county-level zoom
 		zoom: 3,
+		supplementalZoom: 2,
 		//country-level
 		// zoom: 7,
 		constraints__minZoom: 3,
 		constraints__snapZoom: false,
+		constraints__supplementalMinZoom: 2,
 		showAttribution: false,
 	},
 	graphicLayerId: 'crosshair',

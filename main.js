@@ -300,7 +300,7 @@ const initApp = async () => {
 			addExportFormToMap(
 				config,
 				DOM_id_class_variables,
-				hashParams,
+				// hashParams,
 				mapViews,
 				parseAndFormatURL,
 				userPortalData,

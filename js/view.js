@@ -112,15 +112,33 @@ const initExplorerMapViews = async ({
 				config.operationalLayers,
 			);
 
+			const zoomLevel =
+				viewComponentElement.id ===
+				DOM_id_class_variables['explorer_ecosystems']
+					? config.view.zoom
+					: config.view.supplementalZoom;
+
+			const hashZoomLevel =
+				viewComponentElement.id ===
+					DOM_id_class_variables['explorer_ecosystems'] && hashParams?.zoom
+					? hashParams?.zoom
+					: hashParams?.zoom - 1;
+
+			const zoomLevelConstraint =
+				viewComponentElement.id ===
+				DOM_id_class_variables['explorer_ecosystems']
+					? config.view.constraints__minZoom
+					: config.view.constraints__supplementalMinZoom;
+
 			//Is this section too crowded? It seems hard to read.
 			viewComponentElement.view.attributionVisible = false;
 			viewComponentElement.view.popup = null;
 			viewComponentElement.view.center =
 				previousSessionExt || config.view.extCenter;
-			viewComponentElement.view.zoom = hashParams?.zoom || config.view.zoom;
+			viewComponentElement.view.zoom = hashZoomLevel || zoomLevel;
 			viewComponentElement.view.constraints = {
 				snapToZoom: config.view.constraints__zoomSnap,
-				minZoom: config.view.constraints__minZoom,
+				minZoom: zoomLevelConstraint,
 			};
 
 			//GOING TO NEED TO MAKE A FUNCTION THAT WILL PROCESS AN ARRAY OF BASEMAPS THAT WILL THEN BE INSERTED INTO THE MAP CONSTRUCTOR
@@ -172,12 +190,12 @@ const initExplorerMapViews = async ({
 
 				viewComponentElement.map.layers.items[0].addMany(projectionLayers);
 
-				const loadPromises =
+				const loadLayerPromise =
 					viewComponentElement.map.layers.items[0].layers.map(async (layer) => {
 						await layer.when();
 					});
 
-				await Promise.all(loadPromises);
+				await Promise.all(loadLayerPromise);
 			}
 
 			return viewComponentElement;
@@ -185,14 +203,16 @@ const initExplorerMapViews = async ({
 	);
 
 	const mapViews = await Promise.all(mapViewsArray);
+	const allViews = mapViews.map((view) => view);
 
-	await initExplorerViewListeners({
+	setUpViewEvent(
 		mapViews,
 		formatExtentParametersAndUpdateHashParams,
 		DOM_id_class_variables,
-	});
+	);
 
-	return mapViews;
+	console.log(allViews);
+	return allViews;
 };
 
 const addSearchComponent = ({
@@ -217,10 +237,30 @@ const addSearchComponent = ({
 	viewComponentElement.append(componentContainer);
 };
 
+const setUpViewEvent = (
+	mapViews,
+	formatExtentParametersAndUpdateHashParams,
+	DOM_id_class_variables,
+) => {
+	const mainView = mapViews.shift();
+
+	const supplementalViews = mapViews;
+
+	initExplorerViewListeners({
+		mainView,
+		// mapViews,
+		supplementalViews,
+		formatExtentParametersAndUpdateHashParams,
+		DOM_id_class_variables,
+	});
+};
+
 let mapCenter;
 
 const initExplorerViewListeners = async ({
-	mapViews,
+	mainView,
+	supplementalViews,
+	// mapViews,
 	formatExtentParametersAndUpdateHashParams,
 	DOM_id_class_variables,
 }) => {
@@ -229,7 +269,47 @@ const initExplorerViewListeners = async ({
 	);
 
 	//There's a better way to do this, right? Have a function to add each event listener
-	const dragUtil = mapViews.map((viewComponent) => {
+	console.log('THIS IS THE MAIN VIEW THAT WE BROUGHT IN', mainView);
+	console.log(
+		'THIS IS THE SUPPLEMENT VIEWS THAT WE BROUGHT IN',
+		supplementalViews,
+	);
+	reactiveUtils.when(
+		() => mainView.view['center'],
+		() => {
+			if (mainView.view['center'] === mapCenter) {
+				return;
+			}
+
+			mapCenter = mainView.view['center'];
+			recenterMaps({ supplementalViews, mainView });
+		},
+	);
+
+	reactiveUtils.when(
+		() => mainView.view['zoom'],
+		() => {
+			adjustMapZoomLevel({ supplementalViews, mainView });
+		},
+	);
+
+	reactiveUtils.watch(
+		() => mainView.view['navigating'] === false,
+		() => {
+			formatExtentParametersAndUpdateHashParams({ mainView });
+		},
+	);
+
+	const doneUpdatingRemoveLoader = reactiveUtils.watch(
+		() => mainView['updating'] === false,
+		() => {
+			//change class string to variable.
+			document.querySelector(`.initAppLoader`)?.remove();
+		},
+		{ once: true },
+	);
+
+	supplementalViews.map((viewComponent) => {
 		reactiveUtils.when(
 			() => viewComponent.view['center'],
 			() => {
@@ -238,14 +318,14 @@ const initExplorerViewListeners = async ({
 				}
 
 				mapCenter = viewComponent.view['center'];
-				recenterMaps({ mapViews, viewComponent });
+				recenterMaps({ supplementalViews, viewComponent, mainView });
 			},
 		);
 
 		reactiveUtils.when(
 			() => viewComponent.view['zoom'],
 			() => {
-				adjustMapZoomLevel({ mapViews, viewComponent });
+				adjustMapZoomLevel({ supplementalViews, viewComponent, mainView });
 			},
 		);
 
@@ -267,16 +347,34 @@ const initExplorerViewListeners = async ({
 	});
 };
 
-const recenterMaps = ({ mapViews, viewComponent }) => {
-	mapViews.forEach((view) => {
-		view.center = viewComponent['center'];
+const recenterMaps = ({ supplementalViews, viewComponent, mainView }) => {
+	// console.log('mainView', mainView.view['center']);
+	// console.log('viewComponent', viewComponent['center']);
+
+	supplementalViews.forEach((view) => {
+		view.center = viewComponent
+			? viewComponent['center']
+			: mainView.view['center'];
 	});
+
+	if (viewComponent) {
+		mainView.view['center'] = viewComponent['center'];
+	}
+	// viewComponent
+	// 	? (mainView.view['center'] = viewComponent['center'])
+	// 	: (mainView.view['center'] = mainView.view['center']);
 };
 
-const adjustMapZoomLevel = ({ mapViews, viewComponent }) => {
-	mapViews.forEach((view) => {
-		view.zoom = viewComponent['zoom'];
+const adjustMapZoomLevel = ({ supplementalViews, viewComponent, mainView }) => {
+	supplementalViews.forEach((view) => {
+		view.zoom = viewComponent
+			? viewComponent['zoom']
+			: mainView.view['zoom'] - 1;
 	});
+
+	if (viewComponent) {
+		mainView.view['zoom'] = viewComponent['zoom'] + 1;
+	}
 };
 
 const viewClickEvent = (
@@ -291,6 +389,7 @@ const viewClickEvent = (
 	getString,
 	isMobileDevice,
 ) => {
+	console.log('doing a click event');
 	const IdentifyEvent = mapViews.map((viewComponent) => {
 		viewComponent.addEventListener('arcgisViewClick', (event) => {
 			if (viewComponent.id === DOM_id_class_variables['explorer_ecosystems']) {

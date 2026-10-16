@@ -51,14 +51,19 @@ const processURLString = (hashString) => {
 // 		return newParamObj;
 // };
 
-const formatExtentParametersAndUpdateHashParams = ({ viewComponent }) => {
+const formatExtentParametersAndUpdateHashParams = ({
+	viewComponent,
+	mainView,
+}) => {
 	const viewParams = {
 		ext: viewComponent?.extent
 			? `${viewComponent?.extent?.center.longitude.toFixed(
 					2,
 				)},${viewComponent?.extent?.center.latitude.toFixed(2)}`
-			: null,
-		zoom: viewComponent?.zoom.toFixed(0) || null,
+			: `${mainView?.extent?.center.longitude.toFixed(
+					2,
+				)},${mainView?.extent?.center.latitude.toFixed(2)}`,
+		zoom: viewComponent?.zoom.toFixed(0) || mainView?.zoom.toFixed(0),
 	};
 
 	const newHashExtParamsObj = updateNewAppParams(viewParams);
@@ -162,12 +167,14 @@ const createNewHashParamsString = (paramsObj) => {
 		delete paramsObj.export;
 	}
 
-	if (paramsObj.mode === 'change') {
-		delete paramsObj.loc;
-	} else {
-		delete paramsObj.model;
-		delete paramsObj.changeType;
-	}
+	//This was put in as a way to manage the URL param keys for each 'mode' of the application, but that led to some knock-on issues.
+	// if (paramsObj.mode === 'change') {
+	// 	delete paramsObj.loc;
+	// } else {
+	// 	delete paramsObj.model;
+	// 	delete paramsObj.changeType;
+	// }
+
 	console.log('the paramsObj variable', paramsObj);
 	console.log('the hashParams variable', hashParams);
 	let replacementURLString = new URLSearchParams(paramsObj);
@@ -182,7 +189,7 @@ const createNewHashParamsString = (paramsObj) => {
 		replacementURLString.set(key, value);
 	});
 
-	console.log('the hash params', replacementURLString);
+	console.log('the hash params', replacementURLString.toString());
 
 	return replacementURLString.toString();
 };

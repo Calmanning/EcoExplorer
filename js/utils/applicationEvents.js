@@ -332,7 +332,7 @@ const topLevelClickEvent = (
 		addExportFormToMap(
 			config,
 			DOM_id_class_variables,
-			hashParams,
+			// hashParams,
 			mapViews,
 			parseAndFormatURL,
 			userPortalData,
@@ -355,6 +355,10 @@ const togglePopOutMapDisplay = (popOutMapElement) => {
 //NEEDS A NEW NAME -- this function does more than just change the view mode.
 // it is the event listener and function dispatcher for all BTN related clicks.
 //this function relates to any of the view related buttons in the top-right corner that are clicked
+
+let previousExploreModeHashParams;
+let previousChangeModeHashParams;
+
 const changeViewMode = (
 	config,
 	noDisplayClass,
@@ -433,6 +437,7 @@ const changeViewMode = (
 		(layer) => layer.id === config.graphicLayerId,
 	);
 
+	console.log(exploreArcGisMapView.map);
 	console.log(config.graphicLayerId);
 	console.log(graphicLayer);
 	//determines if the buttons to change the view-mode have been clicked
@@ -461,6 +466,13 @@ const changeViewMode = (
 		// }
 
 		if (viewModeString === 'change') {
+			previousExploreModeHashParams = new URL(window.location.href).hash.slice(
+				1,
+			);
+			console.log(
+				'THE PREVIOUS HASH PARAMS. Should be for explore mode',
+				previousExploreModeHashParams,
+			);
 			// projectionViewContainer.classList.remove(noDisplayClass);
 			projectionChangeModelButtons.classList.remove(hiddenClass);
 			modeBtnCascadeLabelArrow.classList.remove(hiddenClass);
@@ -535,8 +547,20 @@ const changeViewMode = (
 					getString,
 				);
 			}
+
+			// previousChangeModeHashParams
+			// 	? (window.location.hash = previousChangeModeHashParams)
+			// 	: null;
+			updateHashParamString({ viewModeString });
 		} else {
+			previousChangeModeHashParams = new URL(window.location.href).hash.slice(
+				1,
+			);
 			console.log('turning off projection layers');
+			console.log(
+				'THE PREVIOUS HASH PARAMS. Should be for change mode',
+				previousChangeModeHashParams,
+			);
 			mainViewProjectionLayers.forEach((layer) => {
 				layer.visible = false;
 			});
@@ -573,6 +597,8 @@ const changeViewMode = (
 		});
 		event.target.closest('button').classList.add('selected-btn');
 
+		// previousExploreModeHashParams
+		// 	? (window.location.hash = previousExploreModeHashParams)
 		updateHashParamString({ viewModeString });
 	}
 

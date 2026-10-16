@@ -1,15 +1,17 @@
 const addExportFormToMap = (
 	config,
 	DOM_id_class_variables,
-	hashParams,
+	// hashParams,
 	mapViews,
 	parseAndFormatURL,
 	userPortalData,
 ) => {
 	//should the 'main' element be sent as a parameter? I think YES, so We'll have to take some time to make that a part of the
-	const params = parseAndFormatURL();
-	console.log(params['mode']);
+	const hashParams = parseAndFormatURL();
+	// console.log(params['mode']);
+	console.log(hashParams);
 	const map = mapViews[0];
+
 	// const operationalLayers = getMapViewForExport(
 	// 	mapViews,
 	// 	params['mode'],
@@ -138,27 +140,26 @@ const createBtn = (string, classString) => {
 };
 //YOU NEED TO UPDATE THIS function. No longer using different mapView for the Projection Layers.
 //certain layers will need to be removed from the main mapView (mapView[0]) for the export process.
-const getMapViewForExport = (mapViews, mapMode, config) => {
-	console.log(mapMode);
-	const exportMap =
-		mapMode === 'explore' || mapMode === ''
-			? removeProjectionLayers(mapViews[0], config)
-			: removeExploreLayers(mapViews[0], config);
+// const getMapViewForExport = (mapViews, mapMode, config) => {
+// 	console.log(mapMode);
+// 	const exportMap =
+// 		mapMode === 'explore' || mapMode === ''
+// 			? removeProjectionLayers(mapViews[0], config)
+// 			: removeExploreLayers(mapViews[0], config);
 
-	//? mapViews[0] //this will be a new function called removeProjectionLayers()
-	//: mapViews[mapViews.length - 1]; // this will be removeExploreLayer (the World Terrestrial Ecosystems v2 for 2015 layer)
+// 	//? mapViews[0] //this will be a new function called removeProjectionLayers()
+// 	//: mapViews[mapViews.length - 1]; // this will be removeExploreLayer (the World Terrestrial Ecosystems v2 for 2015 layer)
 
-	console.log(exportMap);
-	return exportMap;
-};
+// 	console.log(exportMap);
+// 	return exportMap;
+// };
 
 const removeProjectionLayers = (operationalLayers, config) => {
-	const operationalGroupLayer = config.operationalLayers[0];
-
 	const arrayMapViewLayers = operationalLayers;
 	const projectionLayers = config.ecoProjectionLayers__operationalLayers;
 
-	const layerArrayNoExploreLayer = arrayMapViewLayers.filter(
+	const layerArrayNoProjectionLayer = arrayMapViewLayers.filter(
+		//DON'T use the title. Use the itemId
 		(layer) =>
 			projectionLayers.some(
 				(filteringLayer) => filteringLayer.title === layer.title,
@@ -166,15 +167,28 @@ const removeProjectionLayers = (operationalLayers, config) => {
 	);
 	console.log(
 		'the array with the projection layer removed',
+		layerArrayNoProjectionLayer,
+	);
+
+	// operationalGroupLayer.layers = layerArrayNoProjectionLayer;
+	return layerArrayNoProjectionLayer;
+};
+
+const removeExploreLayers = (operationalLayers, config) => {
+	const arrayMapViewLayers = operationalLayers;
+	const exploreLayer = config.dependencies__exploreLayer;
+	// const projectionLayers = config.ecoProjectionLayers__operationalLayers;
+
+	const layerArrayNoExploreLayer = arrayMapViewLayers.filter(
+		(layer) => exploreLayer.title !== layer.title,
+	);
+	console.log(
+		'the array with the explore layer removed',
 		layerArrayNoExploreLayer,
 	);
 
 	// operationalGroupLayer.layers = layerArrayNoExploreLayer;
 	return layerArrayNoExploreLayer;
-};
-
-const removeExploreLayers = () => {
-	const exploreLayer = config.dependencies__exploreLayer;
 };
 
 const createBaseMapLayersDefinitions = (basemapDetails, config) => {
@@ -212,14 +226,17 @@ const createOperationalLayersForExport = ({
 	hashParams,
 }) => {
 	//IS THIS NAMING CONVENTION AND SITUATION A BAD IDEA?
-	console.log('the op layers', operationalLayers);
+	// console.log('the op layers', operationalLayers);
+	console.log('the config layers', config);
 	const mapMode = hashParams.mode;
-	const arrayOfTargetLayers = operationalLayers;
+	console.log('This is the mapMode', mapMode);
+	// const arrayOfTargetLayers = operationalLayers;
 	const operationalLayersArray = [];
 
 	// arrayOfTargetLayers.filter((layer) => layer?.type === 'graphics');
 
-	const arrayOfEditedLayers = arrayOfTargetLayers.map((layer) => {
+	console.log(operationalLayers);
+	const arrayOfEditedLayers = operationalLayers.map((layer) => {
 		if (layer.type === 'group') {
 			const operationalLayers =
 				mapMode === 'explore' || mapMode === ''
@@ -247,7 +264,9 @@ const createOperationalLayersForExport = ({
 
 			return groupLayerParameters;
 		}
-
+		if (layer.id === config.graphicLayerId) {
+			return;
+		}
 		// if (layer.type === 'graphics') {
 		// 	console.log('this layer is rejected', layer);
 		// 	return;
@@ -372,9 +391,12 @@ const createMapExportDefinition = (config, map, exportUI_HTML, hashParams) => {
 	const exportForm_textFields = exportUI_HTML.querySelectorAll('textarea');
 	const basemapInfo = createBaseMapLayersDefinitions(map.map.basemap, config);
 
-	const operationalLayers = map.map.layers;
+	const operationalLayers = [map.map.layers.items[0]];
+	console.log('CONFIG FOR export', config);
 	console.log(map.map);
-	operationalLayers.items.splice(1, 1);
+	// operationalLayers.items.splice(1, 1);
+	console.log('CONFIG FOR export', operationalLayers);
+	console.log('CONFIG FOR export', operationalLayers);
 	const operationalLayersForExport = createOperationalLayersForExport({
 		operationalLayers,
 		config,
@@ -392,11 +414,11 @@ const createMapExportDefinition = (config, map, exportUI_HTML, hashParams) => {
 	// 	// console.log(node.firstElementChild.innerText);
 	// });
 
-	console.log('all the layers fed into the webmap creation', operationalLayers);
-	console.log(
-		'all the layers fed from the operational creation function',
-		operationalLayersForExport,
-	);
+	// console.log('all the layers fed into the webmap creation', operationalLayers);
+	// console.log(
+	// 	'all the layers fed from the operational creation function',
+	// 	operationalLayersForExport,
+	// );
 	console.log(basemapInfo);
 
 	const webmapDefinition = {
