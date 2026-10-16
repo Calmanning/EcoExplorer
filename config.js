@@ -41,7 +41,7 @@ const config = {
 			type: 'group',
 			layerType: 'GroupLayer',
 			title: 'Eco Group Layer',
-			effect: 'drop-shadow(1px, -1px, 8px, black)',
+			// effect: 'drop-shadow(1px, -1px, 8px, black)',
 			effectForExport: [
 				{
 					type: 'drop-shadow',
