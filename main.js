@@ -265,6 +265,7 @@ const initApp = async () => {
 				changeTypeString,
 				statisticsElement,
 				getString,
+				isMobileDevice,
 			);
 		}
 

@@ -200,10 +200,11 @@ const createMobileBackgroundElement = (
 						return specificDropdown;
 					}
 				})
-			: null;
+			: '';
 
 		// const mobileDropdown = createDropdownComponent({ category });
-
+		console.log('THE LABEL', labelElement);
+		labelElement.firstElementChild.classList.add('mobile');
 		labelElement.lastElementChild.remove();
 		labelElement.append(dropdown);
 		// labelElement.append(mobileDropdown);
@@ -369,7 +370,6 @@ const initExplorerViewComponents = ({
 	}
 
 	const supplementalViewComponentsElements = wte_categories.map((category) => {
-		console.log('is this happening?');
 		const supplementalExplorerViewComponent = createSupplementalViewHTMLs({
 			config,
 			DOM_id_class_variables,
@@ -396,11 +396,13 @@ const createMainView = (idString) => {
 	const mainViewDiv = document.createElement('arcgis-map');
 	const zoomContainer = document.createElement('div');
 	const zoomComponent = document.createElement('arcgis-zoom');
+	const homeComponent = document.createElement('arcgis-home');
 
 	zoomContainer.classList.add(
 		`${DOM_id_class_variables['zoom_component_container']}`,
 	);
-	zoomContainer.append(zoomComponent);
+
+	zoomContainer.append(zoomComponent, homeComponent);
 
 	mainViewDiv.append(zoomContainer);
 
@@ -649,21 +651,9 @@ const createViewButtonsUI = (
 		);
 	});
 
-	// containerDiv.id = 'btn-container';
-	// containerDiv.append(
-	// 	buttonsContainer,
-	// 	modeButtons,
-	// 	projectionChangeModelButtons,
-	// 	changeTypeButtons,
-	// );
 	document
 		.querySelector('main')
 		.append(buttonsContainer, projectionChangeModelButtons, changeTypeButtons);
-
-	// modeButtons.addEventListener('click', (event) => {
-	// 	changeDisplayStatus(noDisplayClass, changeModeContainer, event);
-	// });
-	// return containerDiv;
 };
 
 const createSupplementalViewHTMLs = ({
@@ -680,11 +670,6 @@ const createSupplementalViewHTMLs = ({
 	getString,
 	isMobileDevice,
 }) => {
-	//
-	// console.log(category);
-	// const componentTitle = category.title;
-	// const dropdownFeatures = category.features;
-
 	//the main 'arcgis-map' will not need a dropdown selector
 	const dropdownElement = createDropdownComponent({
 		category,
@@ -837,6 +822,7 @@ const createComponentLabel = ({ category }) => {
 
 	const labelComponent = document.createElement('div');
 	labelComponent.classList.add('label');
+	labelComponent.setAttribute('label', category.elementID);
 
 	labelComponent.innerHTML = `<div>${infoIcon} ${labelString}</div> <div>${fullScreenIcon}</div>`;
 	// labelComponent.append(infoIcon, labelDiv, fullScreenIcon);

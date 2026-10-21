@@ -281,25 +281,28 @@ button calcite-icon {
   
   left: -17vw;
 
-  width:15.25rem;
+  /* width:15.25rem; */
+  width:18.25rem;
 
-  /* visibility: visible; */
+  visibility: visible;
 }
 #landform-dropdown.mobile{
   top: -6.5vh;
   left: 49vw;
 
-  width:15.25rem;
+  /* width:15.25rem; */
+  width:18.25rem;
 
-  /* visibility: visible; */
+  visibility: visible;
 }
 #landCover-dropdown.mobile{
   top: -14.5vh;
   left: 16vw;
 
-  width:15.25rem;
+  /* width:15.25rem; */
+  width:18.25rem;
 
-  /* visibility: visible; */
+  visibility: visible;
 }
 #climateRegion-dropdown.mobile.device{
   position: static;
@@ -322,9 +325,10 @@ button calcite-icon {
     width: 100vw;
     filter: drop-shadow(2px 4px 6px black);
 }
-#mobile-background .device{
 
-}
+/* #mobile-background .device{
+
+} */
 
 #mobile-background:has(#projection-container.not-displayed) {
   display: none;
@@ -340,6 +344,16 @@ button calcite-icon {
 @media (width < 800px) {
   #mobile-label-container {
     width: 100vw;
+  }
+  #climateRegion-dropdown.mobile {
+    left: -30vw;
+  }
+  #landCover-dropdown.mobile {
+    left: 3vw;
+  }
+
+  #landform-dropdown.mobile {
+    left: 36vw;
   }
   
 }
@@ -403,6 +417,9 @@ button calcite-icon {
   align-items: center
 }
 
+.label div.mobile {
+  width: 9rem;
+}
 .label div span {
   margin-left: 0.5rem;
 }
@@ -419,19 +436,21 @@ button calcite-icon {
   width: 23rem;
   position: relative;
   top: -1.5vh;
-  justify-self: center;
+  /* justify-self: center; */
   filter: drop-shadow(2px 4px 6px black);
+  margin: 0 auto;
 }
 .dropdown-select .selected-tooltip {
   position:absolute;
-  top: 0.45rem;
-  right: 2rem;
+  top: 0.35rem;
+  left: 1rem;
+  /* right: 2rem; */
 } 
 
 .mobile .dropdown-select .selected-tooltip {
   position:absolute;
-  top: 0.45rem;
-  left: 0.35rem;
+  top: 0.35rem;
+  left: 1rem;
 } 
 .select-button {
   font-family: Avenir Next;
@@ -439,7 +458,8 @@ button calcite-icon {
   color: #444444;
   font-size: 15px;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+  justify-content: center;
   align-items: center;
   width: 100%;
   height: 2.5rem;
@@ -564,6 +584,7 @@ font-size: 0.7rem;
   padding: 0 0.1rem;
   font-size: 0.6rem;
   } 
+
 }
 
 #mode-btns,
@@ -691,10 +712,15 @@ main #user-icon .profile img {
   margin: 25% 0;
 }
 
+arcgis-home {
+  margin-top: 1rem;
+}
+
 #export-icon {
   cursor: pointer;
   position: absolute;
-  top: 13.8rem;
+  top: 19.8rem;
+  /* top: 13.8rem; */
   left: 17px;
   background-color: rgb(255, 255, 255);
   box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px;

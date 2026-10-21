@@ -120,8 +120,11 @@ const updateMapPixelsFromDropdown = ({
 		console.log(element);
 		console.log(element.attributes);
 		const selectedValue = element.attributes.value.value;
-		const category = element.closest('arcgis-map').id;
+		const category =
+			element.closest('arcgis-map')?.id ||
+			element.closest('.label').attributes.label.value;
 
+		console.log('this is the category Var', category);
 		// return selection;
 		dropdownELUs.push(selectedValue);
 		miniMapELUs[`${category}`] = selectedValue;
